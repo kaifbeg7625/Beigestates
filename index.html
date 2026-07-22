@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beig Estates — Real Estate & Property Advisory</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap');
+
+  :root {
+    --blueprint: #12293D;
+    --blueprint-deep: #0C1D2B;
+    --paper: #F3EFE6;
+    --brass: #C98A3E;
+    --brass-bright: #E2A85C;
+    --ink: #1A2733;
+    --ink-soft: rgba(26,39,51,0.62);
+    --line: rgba(255,255,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+  }
+
+  a { text-decoration: none; color: inherit; }
+
+  .container { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- NAV ---------- */
+  nav {
+    background: var(--blueprint);
+    padding: 20px 0;
+  }
+  nav .container { display: flex; align-items: center; justify-content: space-between; }
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 20px;
+    color: var(--paper);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo .mark {
+    width: 28px; height: 28px;
+    border: 1.5px solid var(--brass);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--brass);
+  }
+  .nav-links { display: flex; gap: 28px; font-size: 13px; }
+  .nav-links a { color: rgba(243,239,230,0.75); font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.03em; }
+  .nav-links a:hover { color: var(--brass-bright); }
+  @media (max-width: 640px) { .nav-links { display: none; } }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    background: var(--blueprint);
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 32px 32px;
+    padding: 90px 0 100px;
+    position: relative;
+  }
+  .hero .container { position: relative; z-index: 1; }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--brass-bright);
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 20px;
+  }
+  .eyebrow::before { content: ""; width: 22px; height: 1px; background: var(--brass-bright); }
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 46px;
+    line-height: 1.15;
+    color: var(--paper);
+    max-width: 680px;
+    margin-bottom: 20px;
+  }
+  h1 em { font-style: italic; color: var(--brass-bright); }
+  .hero-sub {
+    font-size: 17px;
+    color: rgba(243,239,230,0.72);
+    max-width: 520px;
+    line-height: 1.6;
+    margin-bottom: 36px;
+  }
+  .cta-row { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 15px 28px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  .btn-primary { background: var(--brass); color: var(--blueprint-deep); font-weight: 500; }
+  .btn-primary:hover { background: var(--brass-bright); }
+  .btn-ghost { border: 1px solid rgba(243,239,230,0.3); color: var(--paper); }
+  .btn-ghost:hover { border-color: var(--brass-bright); color: var(--brass-bright); }
+  .btn-ghost-dark { border: 1px solid rgba(26,39,51,0.25); color: var(--ink); }
+  .btn-ghost-dark:hover { border-color: var(--brass); color: var(--brass); }
+
+  .stat-strip {
+    display: flex; gap: 48px; margin-top: 64px;
+    padding-top: 32px; border-top: 1px dashed rgba(243,239,230,0.2);
+    flex-wrap: wrap;
+  }
+  .stat .num { font-family: 'Fraunces', serif; font-size: 30px; color: var(--brass-bright); font-weight: 600; }
+  .stat .label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: rgba(243,239,230,0.6); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 4px; }
+
+  /* ---------- SECTIONS ---------- */
+  section { padding: 80px 0; }
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--brass); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-label::before { content: ""; width: 18px; height: 1px; background: var(--brass); }
+  h2 {
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 32px;
+    margin-bottom: 16px; max-width: 560px;
+  }
+  .section-intro { color: var(--ink-soft); max-width: 560px; line-height: 1.6; margin-bottom: 48px; font-size: 15px; }
+
+  /* Problem/Solution */
+  .compare {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+  @media (max-width: 700px) { .compare { grid-template-columns: 1fr; } }
+  .compare-card {
+    background: #fff; border-radius: 4px; padding: 28px;
+    border: 1px solid rgba(26,39,51,0.08);
+  }
+  .compare-card.bad { border-left: 3px solid #B5533C; }
+  .compare-card.good { border-left: 3px solid var(--brass); }
+  .compare-card h3 {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    margin-bottom: 16px; color: var(--ink-soft);
+  }
+  .compare-card ul { list-style: none; }
+  .compare-card li {
+    font-size: 14px; line-height: 1.7; padding-left: 20px; position: relative; margin-bottom: 10px;
+  }
+  .compare-card.bad li::before { content: "×"; position: absolute; left: 0; color: #B5533C; font-weight: 700; }
+  .compare-card.good li::before { content: "✓"; position: absolute; left: 0; color: var(--brass); font-weight: 700; }
+
+  /* How it works */
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  @media (max-width: 800px) { .steps { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .steps { grid-template-columns: 1fr; } }
+  .step {
+    background: #fff; border-radius: 4px; padding: 24px 20px;
+    border: 1px solid rgba(26,39,51,0.08);
+  }
+  .step .step-num {
+    font-family: 'Fraunces', serif; font-size: 26px; font-weight: 600;
+    color: var(--brass); margin-bottom: 14px;
+  }
+  .step h4 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+  .step p { font-size: 13px; color: var(--ink-soft); line-height: 1.6; }
+
+  /* Pricing */
+  .pricing-bg { background: var(--blueprint); }
+  .pricing-bg .section-label { color: var(--brass-bright); }
+  .pricing-bg .section-label::before { background: var(--brass-bright); }
+  .pricing-bg h2 { color: var(--paper); }
+  .pricing-bg .section-intro { color: rgba(243,239,230,0.65); }
+  .price-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .price-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .price-grid { grid-template-columns: 1fr; } }
+  .price-card {
+    background: rgba(243,239,230,0.04);
+    border: 1px solid rgba(243,239,230,0.14);
+    border-radius: 4px;
+    padding: 26px 22px;
+  }
+  .price-card .tier {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--brass-bright); margin-bottom: 12px;
+  }
+  .price-card .amount {
+    font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600;
+    color: var(--paper); margin-bottom: 6px;
+  }
+  .price-card .range {
+    font-size: 12px; color: rgba(243,239,230,0.55); margin-bottom: 16px;
+  }
+  .price-card p.desc { font-size: 13px; color: rgba(243,239,230,0.7); line-height: 1.5; }
+
+  /* Trust */
+  .trust-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  @media (max-width: 700px) { .trust-grid { grid-template-columns: 1fr; } }
+  .trust-item { padding: 8px 0; }
+  .trust-item h4 { font-size: 15px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .trust-item h4::before { content: ""; width: 8px; height: 8px; background: var(--brass); border-radius: 50%; flex-shrink: 0; }
+  .trust-item p { font-size: 13px; color: var(--ink-soft); line-height: 1.6; }
+
+  /* Property Listings */
+  .listing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 800px) { .listing-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .listing-grid { grid-template-columns: 1fr; } }
+  .listing-card {
+    border-radius: 4px; overflow: hidden;
+    border: 1px solid rgba(26,39,51,0.08);
+    background: #fff;
+  }
+  .listing-img {
+    height: 170px;
+    background-size: cover;
+    background-position: center;
+    background-color: #e8e2d4;
+  }
+  .listing-body { padding: 18px; }
+  .listing-price {
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 20px;
+    color: var(--brass); margin-bottom: 8px;
+  }
+  .listing-body h4 { font-size: 15px; margin-bottom: 6px; }
+  .listing-meta { font-size: 12px; color: var(--ink-soft); }
+
+  /* Contact CTA */
+  .contact-cta {
+    background: var(--paper);
+    text-align: center;
+    padding: 90px 0;
+  }
+  .contact-cta h2 { margin: 0 auto 16px; }
+  .contact-cta .section-intro { margin: 0 auto 32px; }
+  .contact-cta .btn-primary { padding: 17px 36px; font-size: 14px; }
+
+  footer {
+    background: var(--blueprint-deep);
+    padding: 32px 0;
+    text-align: center;
+  }
+  footer p { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: rgba(243,239,230,0.4); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <div class="logo"><span class="mark">BE</span> Beig Estates</div>
+    <div class="nav-links">
+      <a href="#how-it-works">How It Works</a>
+      <a href="#listings">Listings</a>
+      <a href="#trust">Verification</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="eyebrow">Real Estate & Property Advisory — Lucknow</div>
+    <h1>Buying, renting, or selling property? <em>Do it with someone who's actually on your side.</em></h1>
+    <p class="hero-sub">Beig Estates helps you find the right property, negotiate the right price, and close without the runaround — flats, plots, and everything in between.</p>
+    <div class="cta-row">
+      <a href="#contact" class="btn btn-primary">Share Your Requirement →</a>
+      <a href="#how-it-works" class="btn btn-ghost">See How It Works</a>
+    </div>
+    <div class="stat-strip">
+      <div class="stat"><div class="num">Flats</div><div class="label">Residential</div></div>
+      <div class="stat"><div class="num">Plots</div><div class="label">Land & Sites</div></div>
+      <div class="stat"><div class="num">Lucknow</div><div class="label">Currently Serving</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="how-it-works">
+  <div class="container">
+    <div class="section-label">The Problem</div>
+    <h2>Most property searches waste your time before they waste your money.</h2>
+    <p class="section-intro">Random agents, unresponsive dealers, and listings that are already sold — sound familiar? We built a simple verification step so every enquiry gets a real, dedicated response.</p>
+
+    <div class="compare">
+      <div class="compare-card bad">
+        <h3>Typical Property Search</h3>
+        <ul>
+          <li>Enquiry goes to 5-10 agents at once</li>
+          <li>No one takes ownership of your requirement</li>
+          <li>Listings are outdated or already sold</li>
+          <li>You spend hours chasing callbacks</li>
+        </ul>
+      </div>
+      <div class="compare-card good">
+        <h3>Beig Estates</h3>
+        <ul>
+          <li>One dedicated point of contact — no runaround</li>
+          <li>Your requirement is prioritized, not lost in a queue</li>
+          <li>Verified, current listings only</li>
+          <li>Clear terms discussed upfront, nothing hidden</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:#fff;">
+  <div class="container">
+    <div class="section-label">Process</div>
+    <h2>From enquiry to closed deal — in four steps.</h2>
+    <p class="section-intro">A clear, simple process from the moment you reach out to the day your deal closes.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h4>Share Requirement</h4>
+        <p>Tell us what you're looking for — property, plot, or interior work, your city, and budget.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h4>We Shortlist</h4>
+        <p>We match you with the right listings and set up a visit or consultation.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h4>We Get to Work</h4>
+        <p>We handle negotiations, paperwork, and coordination end to end.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <h4>Deal Closes</h4>
+        <p>You close on your terms — clear and straightforward throughout.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<section id="trust">
+  <div class="container">
+    <div class="section-label">Why Trust This</div>
+    <h2>Built for accountability, not volume.</h2>
+    <p class="section-intro">We're not a listings portal flooding you with unqualified options. Every client is handled individually.</p>
+
+    <div class="trust-grid">
+      <div class="trust-item">
+        <h4>One Dedicated Contact</h4>
+        <p>You deal directly with us throughout — no handoffs between multiple agents.</p>
+      </div>
+      <div class="trust-item">
+        <h4>Verified Listings</h4>
+        <p>Every property listed is genuine and currently available — no outdated or already-sold listings.</p>
+      </div>
+      <div class="trust-item">
+        <h4>Direct Line to Us</h4>
+        <p>Questions along the way? You reach a person, not a support ticket queue.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="listings" style="background:#fff;">
+  <div class="container">
+    <div class="section-label">Current Listings</div>
+    <h2>Properties we're currently handling.</h2>
+    <p class="section-intro">A look at what's available right now. Reach out for full details, site visits, or to list your own property with us.</p>
+
+    <div class="listing-grid">
+      <div class="listing-card">
+        <div class="listing-img" style="background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop&q=60');"></div>
+        <div class="listing-body">
+          <div class="listing-price">₹42,00,000</div>
+          <h4>2BHK Apartment — Gomti Nagar</h4>
+          <p class="listing-meta">1050 sq.ft · 2 Bed · 2 Bath · Ready to Move</p>
+        </div>
+      </div>
+      <div class="listing-card">
+        <div class="listing-img" style="background-image:url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&auto=format&fit=crop&q=60');"></div>
+        <div class="listing-body">
+          <div class="listing-price">₹1,25,00,000</div>
+          <h4>3BHK Villa — Sushant Golf City</h4>
+          <p class="listing-meta">2400 sq.ft · 3 Bed · 3 Bath · Under Construction</p>
+        </div>
+      </div>
+      <div class="listing-card">
+        <div class="listing-img" style="background-image:url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&auto=format&fit=crop&q=60');"></div>
+        <div class="listing-body">
+          <div class="listing-price">₹78,00,000</div>
+          <h4>3BHK Flat — Hazratganj</h4>
+          <p class="listing-meta">1800 sq.ft · 3 Bed · 2 Bath · Ready to Move</p>
+        </div>
+      </div>
+      <div class="listing-card">
+        <div class="listing-img" style="background-image:url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&auto=format&fit=crop&q=60');"></div>
+        <div class="listing-body">
+          <div class="listing-price">₹32,00,000</div>
+          <h4>Residential Plot — Sultanpur Road</h4>
+          <p class="listing-meta">1800 sq.ft · Clear Title · Ready for Construction</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact-cta" id="contact">
+  <div class="container">
+    <div class="section-label" style="justify-content:center;">Get Started</div>
+    <h2 style="margin-left:auto; margin-right:auto;">Ready to find the right property?</h2>
+    <p class="section-intro">Message us on WhatsApp, or drop us an email — with your requirement and budget, we'll take it from there.</p>
+    <div class="cta-row" style="justify-content:center;">
+      <a href="#" id="whatsappCta" class="btn btn-primary">Message Us on WhatsApp →</a>
+      <a href="mailto:kaifbegmirza7497@gmail.com?subject=Property%20Requirement&body=Hi%20Beig%20Estates%2C%0A%0AI'm%20looking%20for%20help%20with%3A%0ACity%2FLocality%3A%0ABudget%3A%0ATimeline%3A" class="btn btn-ghost-dark">Email Us →</a>
+    </div>
+    <p style="margin-top:20px; font-size:13px; color: var(--ink-soft); font-family:'IBM Plex Mono', monospace;">
+      Or call directly: <a href="tel:+917497937625" style="color: var(--ink); font-weight:600;">+91 74979 37625</a>
+      · <a href="tel:+919026785261" style="color: var(--ink); font-weight:600;">+91 90267 85261</a>
+      · <a href="#" id="whatsappCta2" style="color: var(--brass); font-weight:600;">WhatsApp</a>
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>BEIG ESTATES · LUCKNOW · REAL ESTATE & PROPERTY ADVISORY</p>
+  </div>
+</footer>
+
+<script>
+  // ⚠️ REPLACE with your WhatsApp number (country code + number, no + or spaces)
+  const WHATSAPP_NUMBER = "917497937625";
+  const message = encodeURIComponent("Hi, I'm looking for help with a property requirement through Beig Estates. Can we discuss?");
+  document.getElementById('whatsappCta').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
+  document.getElementById('whatsappCta2').href = `https://wa.me/919026785261?text=${message}`;
+</script>
+
+</body>
+</html>
