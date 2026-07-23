@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap');
+@import "tailwindcss";
+
+:root {
+  --blueprint: #12293D;
+  --blueprint-deep: #0C1D2B;
+  --paper: #F3EFE6;
+  --brass: #B5762A;
+  --brass-bright: #E2A85C;
+  --ink: #1A2733;
+  --ink-soft: #5B6774;
+}
+
+@theme inline {
+  --color-blueprint: var(--blueprint);
+  --color-blueprint-deep: var(--blueprint-deep);
+  --color-paper: var(--paper);
+  --color-brass: var(--brass);
+  --color-brass-bright: var(--brass-bright);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --font-serif: "Fraunces", serif;
+  --font-sans: "IBM Plex Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "IBM Plex Sans", sans-serif;
+}
+
+.blueprint-grid {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
