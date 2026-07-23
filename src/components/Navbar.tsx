@@ -18,16 +18,14 @@ export default function Navbar() {
     <nav className="bg-blueprint py-3 relative z-50">
       <div className="max-w-5xl mx-auto px-6 flex items-center justify-between">
         <Link href="/" className="flex items-center">
-          <div className="bg-paper rounded-md px-3 py-1.5 flex items-center">
-            <Image
-              src="/logo.webp"
-              alt="Beig Estates"
-              width={140}
-              height={124}
-              className="h-9 w-auto"
-              priority
-            />
-          </div>
+          <Image
+            src="/logo.webp"
+            alt="Beig Estates"
+            width={160}
+            height={142}
+            className="h-11 w-auto"
+            priority
+          />
         </Link>
 
         {/* Desktop links */}
