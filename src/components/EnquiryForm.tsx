@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createClient } from "@/lib/supabase/client";
 
 const initialState = {
   name: "",
@@ -38,25 +37,24 @@ export default function EnquiryForm() {
     e.preventDefault();
     setStatus("submitting");
 
-    const supabase = createClient();
-    const { error } = await supabase.from("leads").insert({
-      name: form.name,
-      mobile: form.mobile,
-      service: form.service,
-      city: form.city,
-      budget: form.budget,
-      timeline: form.timeline,
-      notes: form.notes || null,
-    });
+    try {
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
 
-    if (error) {
-      console.error(error);
+      if (!res.ok) {
+        setStatus("error");
+        return;
+      }
+
+      setStatus("done");
+      setForm(initialState);
+    } catch (err) {
+      console.error(err);
       setStatus("error");
-      return;
     }
-
-    setStatus("done");
-    setForm(initialState);
   }
 
   if (status === "done") {
