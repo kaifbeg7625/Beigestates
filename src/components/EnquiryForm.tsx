@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 const initialState = {
@@ -16,6 +16,13 @@ const initialState = {
 export default function EnquiryForm() {
   const [form, setForm] = useState(initialState);
   const [status, setStatus] = useState<"idle" | "submitting" | "done" | "error">("idle");
+
+  useEffect(() => {
+    const preselected = sessionStorage.getItem("beig_intent_service");
+    if (preselected) {
+      setForm((f) => ({ ...f, service: preselected }));
+    }
+  }, []);
 
   function update<K extends keyof typeof initialState>(key: K, value: string) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -90,7 +97,9 @@ export default function EnquiryForm() {
         >
           <option value="" disabled>Select one</option>
           <option>Buy Property</option>
-          <option>Rent Property</option>
+          <option>Sell Property</option>
+          <option>Rent Property (Looking to Rent)</option>
+          <option>List Property for Rent</option>
           <option>Buy Plot</option>
           <option>Interior Design</option>
           <option>Real Estate Consultation</option>

@@ -7,10 +7,12 @@ import Listings from "@/components/Listings";
 import FAQ from "@/components/FAQ";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import IntentPopup from "@/components/IntentPopup";
 
 export default function Home() {
   return (
     <>
+      <IntentPopup />
       <Navbar />
       <Hero />
       <ProblemSolution />
