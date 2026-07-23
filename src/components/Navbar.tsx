@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const links = [
   { href: "/#how-it-works", label: "How It Works" },
@@ -14,16 +15,19 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="bg-blueprint py-5 relative z-50">
+    <nav className="bg-blueprint py-3 relative z-50">
       <div className="max-w-5xl mx-auto px-6 flex items-center justify-between">
-        <Link
-          href="/"
-          className="font-serif font-semibold text-xl text-paper flex items-center gap-2.5"
-        >
-          <span className="w-7 h-7 border border-brass flex items-center justify-center font-mono text-xs text-brass">
-            BE
-          </span>
-          Beig Estates
+        <Link href="/" className="flex items-center">
+          <div className="bg-paper rounded-md px-3 py-1.5 flex items-center">
+            <Image
+              src="/logo.webp"
+              alt="Beig Estates"
+              width={140}
+              height={124}
+              className="h-9 w-auto"
+              priority
+            />
+          </div>
         </Link>
 
         {/* Desktop links */}
