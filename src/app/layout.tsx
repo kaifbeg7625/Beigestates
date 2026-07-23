@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 // ⚠️ Update this if you connect a custom domain later
-const SITE_URL = "https://beigestates.vercel.app";
+const SITE_URL = "https://beigestates.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
