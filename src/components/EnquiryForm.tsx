@@ -19,8 +19,14 @@ export default function EnquiryForm() {
 
   useEffect(() => {
     const preselected = sessionStorage.getItem("beig_intent_service");
-    if (preselected) {
-      setForm((f) => ({ ...f, service: preselected }));
+    const preNotes = sessionStorage.getItem("beig_intent_notes");
+    if (preselected || preNotes) {
+      setForm((f) => ({
+        ...f,
+        service: preselected || f.service,
+        notes: preNotes || f.notes,
+      }));
+      sessionStorage.removeItem("beig_intent_notes");
     }
   }, []);
 

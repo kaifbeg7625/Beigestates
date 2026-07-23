@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { SectionLabel } from "./ProblemSolution";
 import type { Property } from "@/lib/types";
+import Link from "next/link";
 
 export default async function Listings() {
   const supabase = await createClient();
@@ -28,34 +29,37 @@ export default async function Listings() {
           </p>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {properties.map((p) => (
-              <div
-                key={p.id}
-                className="rounded overflow-hidden border border-ink/10 bg-white"
-              >
-                <div
-                  className="h-[170px] bg-cover bg-center bg-[#e8e2d4]"
-                  style={{
-                    backgroundImage: p.image_url
-                      ? `url('${p.image_url}')`
-                      : undefined,
-                  }}
-                />
-                <div className="p-4.5">
-                  <div className="font-serif font-semibold text-xl text-brass mb-2">
-                    {p.price}
+            {properties.map((p) => {
+              const cover =
+                p.images && p.images.length > 0 ? p.images[0] : p.image_url;
+              return (
+                <Link
+                  href={`/property/${p.id}`}
+                  key={p.id}
+                  className="rounded overflow-hidden border border-ink/10 bg-white block hover:shadow-lg transition-shadow"
+                >
+                  <div
+                    className="h-[170px] bg-cover bg-center bg-[#e8e2d4]"
+                    style={{
+                      backgroundImage: cover ? `url('${cover}')` : undefined,
+                    }}
+                  />
+                  <div className="p-4.5">
+                    <div className="font-serif font-semibold text-xl text-brass mb-2">
+                      {p.price}
+                    </div>
+                    <h4 className="text-[15px] font-semibold mb-1.5">
+                      {p.title} — {p.location}
+                    </h4>
+                    <p className="text-xs text-ink-soft">
+                      {[p.area, p.bedrooms && `${p.bedrooms} Bed`, p.bathrooms && `${p.bathrooms} Bath`, p.status]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </p>
                   </div>
-                  <h4 className="text-[15px] font-semibold mb-1.5">
-                    {p.title} — {p.location}
-                  </h4>
-                  <p className="text-xs text-ink-soft">
-                    {[p.area, p.bedrooms && `${p.bedrooms} Bed`, p.bathrooms && `${p.bathrooms} Bath`, p.status]
-                      .filter(Boolean)
-                      .join(" · ")}
-                  </p>
-                </div>
-              </div>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         )}
       </div>

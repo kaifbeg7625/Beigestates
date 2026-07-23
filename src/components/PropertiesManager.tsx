@@ -13,7 +13,7 @@ const emptyForm = {
   bedrooms: "",
   bathrooms: "",
   status: "Ready to Move",
-  image_url: "",
+  imagesText: "",
   description: "",
 };
 
@@ -44,7 +44,7 @@ export default function PropertiesManager({
       bedrooms: p.bedrooms ?? "",
       bathrooms: p.bathrooms ?? "",
       status: p.status,
-      image_url: p.image_url ?? "",
+      imagesText: (p.images && p.images.length > 0 ? p.images : p.image_url ? [p.image_url] : []).join("\n"),
       description: p.description ?? "",
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -59,6 +59,11 @@ export default function PropertiesManager({
     e.preventDefault();
     setSaving(true);
 
+    const imagesArray = form.imagesText
+      .split("\n")
+      .map((s) => s.trim())
+      .filter(Boolean);
+
     const payload = {
       title: form.title,
       location: form.location,
@@ -68,7 +73,8 @@ export default function PropertiesManager({
       bedrooms: form.bedrooms || null,
       bathrooms: form.bathrooms || null,
       status: form.status,
-      image_url: form.image_url || null,
+      images: imagesArray,
+      image_url: imagesArray[0] || null,
       description: form.description || null,
     };
 
@@ -163,11 +169,17 @@ export default function PropertiesManager({
           <LabeledInput label="Bathrooms" value={form.bathrooms} onChange={(v) => update("bathrooms", v)} />
         </div>
 
-        <LabeledInput
-          label="Image URL (upload to imgur.com and paste the direct link)"
-          value={form.image_url}
-          onChange={(v) => update("image_url", v)}
-        />
+        <div>
+          <label className="block font-mono text-[11px] uppercase tracking-wide text-ink-soft mb-1.5">
+            Photos — one image URL per line (upload each to imgur.com and paste the direct link; first one becomes the cover photo)
+          </label>
+          <textarea
+            value={form.imagesText}
+            onChange={(e) => update("imagesText", e.target.value)}
+            placeholder={"https://...jpg\nhttps://...jpg\nhttps://...jpg"}
+            className="w-full border-0 border-b-[1.5px] border-ink/25 bg-transparent py-2 outline-none focus:border-brass min-h-[90px] font-mono text-sm"
+          />
+        </div>
 
         <div>
           <label className="block font-mono text-[11px] uppercase tracking-wide text-ink-soft mb-1.5">
@@ -205,7 +217,9 @@ export default function PropertiesManager({
           All Listings ({properties.length})
         </h2>
         <div className="space-y-3">
-          {properties.map((p) => (
+          {properties.map((p) => {
+            const thumb = p.images && p.images.length > 0 ? p.images[0] : p.image_url;
+            return (
             <div
               key={p.id}
               className="bg-white rounded border border-ink/10 p-4 flex items-center gap-4"
@@ -213,7 +227,7 @@ export default function PropertiesManager({
               <div
                 className="w-20 h-16 rounded bg-cover bg-center bg-[#e8e2d4] shrink-0"
                 style={{
-                  backgroundImage: p.image_url ? `url('${p.image_url}')` : undefined,
+                  backgroundImage: thumb ? `url('${thumb}')` : undefined,
                 }}
               />
               <div className="flex-1 min-w-0">
@@ -237,7 +251,8 @@ export default function PropertiesManager({
                 Delete
               </button>
             </div>
-          ))}
+            );
+          })}
           {properties.length === 0 && (
             <p className="text-sm text-ink-soft">No properties yet. Add your first one above.</p>
           )}

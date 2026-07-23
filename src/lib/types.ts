@@ -9,6 +9,7 @@ export type Property = {
   bathrooms: string | null;
   status: string;
   image_url: string | null;
+  images: string[] | null;
   description: string | null;
   created_at: string;
 };

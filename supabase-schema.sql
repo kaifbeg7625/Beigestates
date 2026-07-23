@@ -13,6 +13,7 @@ create table if not exists properties (
   bathrooms text,
   status text default 'Ready to Move', -- Ready to Move, Under Construction
   image_url text,
+  images jsonb default '[]'::jsonb, -- array of photo URLs for the gallery
   description text,
   created_at timestamptz default now()
 );
