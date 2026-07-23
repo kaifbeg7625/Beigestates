@@ -4,11 +4,10 @@ export default function Hero() {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage:
-            "url('https://images.pexels.com/photos/36355687/pexels-photo-36355687.jpeg')",
+          backgroundImage: "url('/hero.webp')",
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-blueprint via-blueprint/85 to-blueprint/50" />
+      <div className="absolute inset-0 bg-gradient-to-r from-blueprint-deep via-blueprint/90 to-blueprint/60" />
 
       <div className="max-w-5xl mx-auto px-6 relative z-10">
         <div className="font-mono text-[11px] tracking-[0.16em] uppercase text-brass-bright flex items-center gap-2 mb-5">
