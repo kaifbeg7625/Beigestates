@@ -40,10 +40,12 @@ export async function POST(req: NextRequest) {
 
     // Send email notification — failure here should never block the lead
     // from being saved, so it's wrapped separately.
+    let emailSent = false;
+    let emailError: string | null = null;
     try {
       if (process.env.RESEND_API_KEY && process.env.NOTIFY_EMAIL) {
         const resend = new Resend(process.env.RESEND_API_KEY);
-        await resend.emails.send({
+        const result = await resend.emails.send({
           from: "Beig Estates <onboarding@resend.dev>",
           to: process.env.NOTIFY_EMAIL,
           subject: `New Lead: ${name} — ${service}`,
@@ -60,12 +62,19 @@ export async function POST(req: NextRequest) {
             <p><a href="https://wa.me/91${mobile}">Message on WhatsApp</a></p>
           `,
         });
+        if (result.error) {
+          emailError = JSON.stringify(result.error);
+        } else {
+          emailSent = true;
+        }
+      } else {
+        emailError = "Missing RESEND_API_KEY or NOTIFY_EMAIL env var";
       }
-    } catch (emailError) {
-      console.error("Email notification failed:", emailError);
+    } catch (err) {
+      emailError = err instanceof Error ? err.message : String(err);
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, emailSent, emailError });
   } catch (err) {
     console.error("Lead submission error:", err);
     return NextResponse.json(
