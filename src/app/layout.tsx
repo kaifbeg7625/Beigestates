@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 // ⚠️ Update this if you connect a custom domain later
-const SITE_URL = "https://beigestates.com";
+const SITE_URL = "https://beigestates.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -30,12 +30,21 @@ export const metadata: Metadata = {
     siteName: "Beig Estates",
     locale: "en_IN",
     type: "website",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Beig Estates — Real Estate & Property Advisory in Lucknow",
+      },
+    ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Beig Estates — Real Estate & Property Advisory in Lucknow",
     description:
       "Find flats, plots, and villas in Lucknow with a dedicated point of contact from enquiry to closed deal.",
+    images: ["/og-image.jpg"],
   },
   alternates: {
     canonical: SITE_URL,

@@ -1,11 +1,15 @@
+import Image from "next/image";
+
 export default function Hero() {
   return (
     <section className="relative pt-24 pb-28 overflow-hidden">
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: "url('/hero.webp')",
-        }}
+      <Image
+        src="/hero.webp"
+        alt="Modern residential towers and tree-lined road in Lucknow"
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover"
       />
       <div className="absolute inset-0 bg-gradient-to-r from-blueprint-deep via-blueprint/90 to-blueprint/60" />
 

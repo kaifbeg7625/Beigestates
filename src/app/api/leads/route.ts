@@ -5,7 +5,13 @@ import { Resend } from "resend";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, mobile, service, city, budget, timeline, notes } = body;
+    const { name, mobile, service, city, budget, timeline, notes, company } = body;
+
+    // Honeypot — real users never fill this hidden field. If it's filled,
+    // pretend success without touching the database or sending email.
+    if (company) {
+      return NextResponse.json({ success: true, emailSent: false });
+    }
 
     if (!name || !mobile || !service || !city || !budget || !timeline) {
       return NextResponse.json(

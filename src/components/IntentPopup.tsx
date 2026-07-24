@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const options = [
   { label: "I want to Buy", service: "Buy Property", emoji: "🏠" },
@@ -11,17 +11,71 @@ const options = [
 
 export default function IntentPopup() {
   const [visible, setVisible] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     // Uses sessionStorage only (browser memory, cleared when the tab closes).
     // Nothing is sent to a server and no tracking cookie is set, so no
     // cookie-consent banner is required for this.
     const alreadyShown = sessionStorage.getItem("beig_intent_shown");
-    if (!alreadyShown) {
-      const timer = setTimeout(() => setVisible(true), 900);
-      return () => clearTimeout(timer);
+    if (alreadyShown) return;
+
+    let triggered = false;
+
+    function trigger() {
+      if (triggered) return;
+      triggered = true;
+      setVisible(true);
+      window.removeEventListener("scroll", onScroll);
     }
+
+    // Trigger on scroll intent (~25% down the page) instead of immediately,
+    // with a longer fallback timer for visitors who don't scroll at all.
+    function onScroll() {
+      const scrolled = window.scrollY;
+      const threshold = window.innerHeight * 0.25;
+      if (scrolled > threshold) trigger();
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    const fallback = setTimeout(trigger, 4000);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      clearTimeout(fallback);
+    };
   }, []);
+
+  // Focus the close button when opened, and handle Escape to close
+  useEffect(() => {
+    if (!visible) return;
+    closeBtnRef.current?.focus();
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") dismiss();
+      // Basic focus trap within the dialog
+      if (e.key === "Tab" && dialogRef.current) {
+        const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible]);
 
   function dismiss() {
     sessionStorage.setItem("beig_intent_shown", "true");
@@ -32,7 +86,6 @@ export default function IntentPopup() {
     sessionStorage.setItem("beig_intent_shown", "true");
     sessionStorage.setItem("beig_intent_service", service);
     setVisible(false);
-    // Scroll to the enquiry form after a brief delay so it's visible
     setTimeout(() => {
       document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
     }, 150);
@@ -46,10 +99,15 @@ export default function IntentPopup() {
       onClick={dismiss}
     >
       <div
+        ref={dialogRef}
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="intent-popup-title"
         className="w-full max-w-md bg-paper rounded-lg border border-ink/10 shadow-2xl p-6 relative animate-[fadeIn_0.2s_ease-out]"
       >
         <button
+          ref={closeBtnRef}
           onClick={dismiss}
           aria-label="Close"
           className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center text-ink-soft hover:text-ink"
@@ -62,7 +120,7 @@ export default function IntentPopup() {
         <p className="font-mono text-[11px] uppercase tracking-wide text-brass mb-2">
           Quick question
         </p>
-        <h3 className="font-serif font-semibold text-xl mb-5">
+        <h3 id="intent-popup-title" className="font-serif font-semibold text-xl mb-5">
           What brings you here today?
         </h3>
 

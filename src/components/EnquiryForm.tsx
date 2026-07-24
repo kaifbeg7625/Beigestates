@@ -10,6 +10,7 @@ const initialState = {
   budget: "",
   timeline: "",
   notes: "",
+  company: "", // honeypot — real users never fill this; bots often do
 };
 
 export default function EnquiryForm() {
@@ -35,6 +36,14 @@ export default function EnquiryForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    // Honeypot check — if this hidden field is filled, silently pretend
+    // success without hitting the API (it's very likely a bot).
+    if (form.company) {
+      setStatus("done");
+      return;
+    }
+
     setStatus("submitting");
 
     try {
@@ -69,20 +78,40 @@ export default function EnquiryForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      <Field label="Full name">
+    <form onSubmit={handleSubmit} className="space-y-5" noValidate={false}>
+      {/* Honeypot field — hidden from real users via CSS, visible to bots */}
+      <div style={{ position: "absolute", left: "-9999px" }} aria-hidden="true">
+        <label htmlFor="company">Company</label>
+        <input
+          type="text"
+          id="company"
+          name="company"
+          tabIndex={-1}
+          autoComplete="off"
+          value={form.company}
+          onChange={(e) => update("company", e.target.value)}
+        />
+      </div>
+
+      <Field label="Full name" htmlFor="name">
         <input
           required
+          id="name"
+          name="name"
+          autoComplete="name"
           value={form.name}
           onChange={(e) => update("name", e.target.value)}
           className="input"
         />
       </Field>
 
-      <Field label="Mobile number">
+      <Field label="Mobile number" htmlFor="mobile">
         <input
           required
+          id="mobile"
+          name="mobile"
           type="tel"
+          autoComplete="tel"
           pattern="[0-9]{10}"
           maxLength={10}
           value={form.mobile}
@@ -92,9 +121,11 @@ export default function EnquiryForm() {
         />
       </Field>
 
-      <Field label="What are you looking for?">
+      <Field label="What are you looking for?" htmlFor="service">
         <select
           required
+          id="service"
+          name="service"
           value={form.service}
           onChange={(e) => update("service", e.target.value)}
           className="input"
@@ -111,17 +142,22 @@ export default function EnquiryForm() {
       </Field>
 
       <div className="grid sm:grid-cols-2 gap-5">
-        <Field label="City / locality">
+        <Field label="City / locality" htmlFor="city">
           <input
             required
+            id="city"
+            name="city"
+            autoComplete="address-level2"
             value={form.city}
             onChange={(e) => update("city", e.target.value)}
             className="input"
           />
         </Field>
-        <Field label="Budget range">
+        <Field label="Budget range" htmlFor="budget">
           <select
             required
+            id="budget"
+            name="budget"
             value={form.budget}
             onChange={(e) => update("budget", e.target.value)}
             className="input"
@@ -139,9 +175,11 @@ export default function EnquiryForm() {
         </Field>
       </div>
 
-      <Field label="When do you plan to proceed?">
+      <Field label="When do you plan to proceed?" htmlFor="timeline">
         <select
           required
+          id="timeline"
+          name="timeline"
           value={form.timeline}
           onChange={(e) => update("timeline", e.target.value)}
           className="input"
@@ -154,8 +192,10 @@ export default function EnquiryForm() {
         </select>
       </Field>
 
-      <Field label="Additional requirements (optional)">
+      <Field label="Additional requirements (optional)" htmlFor="notes">
         <textarea
+          id="notes"
+          name="notes"
           value={form.notes}
           onChange={(e) => update("notes", e.target.value)}
           className="input min-h-[70px]"
@@ -195,10 +235,21 @@ export default function EnquiryForm() {
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({
+  label,
+  htmlFor,
+  children,
+}: {
+  label: string;
+  htmlFor: string;
+  children: React.ReactNode;
+}) {
   return (
     <div>
-      <label className="block font-mono text-[11px] uppercase tracking-wide text-ink-soft mb-2">
+      <label
+        htmlFor={htmlFor}
+        className="block font-mono text-[11px] uppercase tracking-wide text-ink-soft mb-2"
+      >
         {label}
       </label>
       {children}

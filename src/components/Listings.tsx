@@ -1,10 +1,11 @@
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { SectionLabel } from "./ProblemSolution";
 import type { Property } from "@/lib/types";
 import Link from "next/link";
+import Image from "next/image";
 
 export default async function Listings() {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data: properties } = await supabase
     .from("properties")
     .select("*")
@@ -38,12 +39,17 @@ export default async function Listings() {
                   key={p.id}
                   className="rounded overflow-hidden border border-ink/10 bg-white block hover:shadow-lg transition-shadow"
                 >
-                  <div
-                    className="h-[170px] bg-cover bg-center bg-[#e8e2d4]"
-                    style={{
-                      backgroundImage: cover ? `url('${cover}')` : undefined,
-                    }}
-                  />
+                  <div className="h-[170px] relative bg-[#e8e2d4]">
+                    {cover && (
+                      <Image
+                        src={cover}
+                        alt={`${p.title} in ${p.location} — ${p.price}`}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover"
+                      />
+                    )}
+                  </div>
                   <div className="p-4.5">
                     <div className="font-serif font-semibold text-xl text-brass mb-2">
                       {p.price}

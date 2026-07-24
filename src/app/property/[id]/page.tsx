@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import type { Property } from "@/lib/types";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -9,9 +9,11 @@ import type { Metadata } from "next";
 
 type Props = { params: Promise<{ id: string }> };
 
+export const revalidate = 60;
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data: property } = await supabase
     .from("properties")
     .select("*")
@@ -28,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PropertyDetailPage({ params }: Props) {
   const { id } = await params;
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data: property } = await supabase
     .from("properties")
     .select("*")
