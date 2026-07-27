@@ -22,7 +22,7 @@ export default function EnquireAboutProperty({
       "beig_intent_notes",
       `Interested in: ${propertyTitle}`
     );
-    window.location.href = "/#contact";
+    window.location.href = "/contact";
   }
 
   return (

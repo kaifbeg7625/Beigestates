@@ -5,10 +5,10 @@ import Link from "next/link";
 import Image from "next/image";
 
 const links = [
-  { href: "/#how-it-works", label: "How It Works" },
-  { href: "/#listings", label: "Listings" },
-  { href: "/#trust", label: "Trust" },
-  { href: "/#contact", label: "Contact" },
+  { href: "/", label: "Home" },
+  { href: "/listings", label: "Listings" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export default function Navbar() {
@@ -31,9 +31,9 @@ export default function Navbar() {
         {/* Desktop links */}
         <div className="hidden sm:flex gap-7 text-[13px] font-mono tracking-wide">
           {links.map((l) => (
-            <a key={l.href} href={l.href} className="text-paper/75 hover:text-brass-bright">
+            <Link key={l.href} href={l.href} className="text-paper/75 hover:text-brass-bright">
               {l.label}
-            </a>
+            </Link>
           ))}
         </div>
 
@@ -59,14 +59,14 @@ export default function Navbar() {
       {open && (
         <div className="sm:hidden absolute top-full left-0 right-0 bg-blueprint border-t border-white/10 px-6 py-4 flex flex-col gap-4">
           {links.map((l) => (
-            <a
+            <Link
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
               className="text-paper/85 font-mono text-sm tracking-wide"
             >
               {l.label}
-            </a>
+            </Link>
           ))}
         </div>
       )}

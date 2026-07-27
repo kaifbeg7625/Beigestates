@@ -86,9 +86,7 @@ export default function IntentPopup() {
     sessionStorage.setItem("beig_intent_shown", "true");
     sessionStorage.setItem("beig_intent_service", service);
     setVisible(false);
-    setTimeout(() => {
-      document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-    }, 150);
+    window.location.href = "/contact";
   }
 
   if (!visible) return null;

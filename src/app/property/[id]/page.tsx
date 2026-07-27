@@ -52,7 +52,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
       <section className="py-12">
         <div className="max-w-5xl mx-auto px-6">
-          <a href="/#listings" className="font-mono text-xs uppercase tracking-wide text-brass mb-6 inline-block">
+          <a href="/listings" className="font-mono text-xs uppercase tracking-wide text-brass mb-6 inline-block">
             ← Back to listings
           </a>
 
