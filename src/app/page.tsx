@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import Story from "@/components/Story";
 import Footer from "@/components/Footer";
 import IntentPopup from "@/components/IntentPopup";
 import Link from "next/link";
@@ -27,6 +28,7 @@ export default function Home() {
       <IntentPopup />
       <Navbar />
       <Hero />
+      <Story />
 
       <section className="py-20 bg-white">
         <div className="max-w-5xl mx-auto px-6">
