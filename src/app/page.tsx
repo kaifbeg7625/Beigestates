@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Story from "@/components/Story";
+import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import IntentPopup from "@/components/IntentPopup";
 import Link from "next/link";
@@ -60,6 +61,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <Contact />
 
       <Footer />
     </>
