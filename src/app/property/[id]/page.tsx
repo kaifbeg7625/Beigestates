@@ -22,9 +22,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!property) return { title: "Property Not Found" };
 
+  const description = `${property.title} in ${property.location} — ${property.price}. ${property.area ?? ""} ${property.status}. View details and enquire with Beig Estates.`;
+
   return {
     title: `${property.title} — ${property.location}`,
-    description: `${property.title} in ${property.location} — ${property.price}. ${property.area ?? ""} ${property.status}. View details and enquire with Beig Estates.`,
+    description,
+    alternates: {
+      canonical: `/property/${id}`,
+    },
+    openGraph: {
+      url: `/property/${id}`,
+      title: `${property.title} — ${property.location}`,
+      description,
+    },
   };
 }
 
@@ -50,6 +60,7 @@ export default async function PropertyDetailPage({ params }: Props) {
     <>
       <Navbar />
 
+      <main id="main-content">
       <section className="py-12">
         <div className="max-w-5xl mx-auto px-6">
           <a href="/listings" className="font-mono text-xs uppercase tracking-wide text-brass mb-6 inline-block">
@@ -96,6 +107,7 @@ export default async function PropertyDetailPage({ params }: Props) {
           </div>
         </div>
       </section>
+      </main>
 
       <Footer />
     </>

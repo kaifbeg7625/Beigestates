@@ -6,13 +6,32 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Contact Us",
   description: "Share your property requirement with Beig Estates — WhatsApp, call, email, or the form below.",
+  alternates: {
+    canonical: "/contact",
+  },
+  openGraph: {
+    url: "/contact",
+    title: "Contact Beig Estates",
+    description: "Share your property requirement with Beig Estates — WhatsApp, call, email, or the form below.",
+  },
 };
 
 export default function ContactPage() {
   return (
     <>
       <Navbar />
-      <Contact />
+      <main id="main-content">
+        <div className="max-w-5xl mx-auto px-6 pt-14 pb-2">
+          <div className="font-mono text-[11px] tracking-[0.14em] uppercase text-brass mb-3 flex items-center gap-2">
+            <span className="w-[18px] h-px bg-brass" />
+            Contact
+          </div>
+          <h1 className="font-serif font-semibold text-3xl">
+            Contact Beig Estates
+          </h1>
+        </div>
+        <Contact />
+      </main>
       <Footer />
     </>
   );

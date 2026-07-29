@@ -28,41 +28,43 @@ export default function Home() {
     <>
       <IntentPopup />
       <Navbar />
-      <Hero />
-      <Story />
+      <main id="main-content">
+        <Hero />
+        <Story />
 
-      <section className="py-20 bg-white">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="grid sm:grid-cols-3 gap-8 mb-14">
-            {highlights.map((h) => (
-              <div key={h.title}>
-                <h3 className="text-[15px] font-semibold mb-2 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-brass rounded-full inline-block shrink-0" />
-                  {h.title}
-                </h3>
-                <p className="text-[13px] text-ink-soft leading-relaxed">{h.desc}</p>
-              </div>
-            ))}
+        <section className="py-20 bg-white">
+          <div className="max-w-5xl mx-auto px-6">
+            <div className="grid sm:grid-cols-3 gap-8 mb-14">
+              {highlights.map((h) => (
+                <div key={h.title}>
+                  <h3 className="text-[15px] font-semibold mb-2 flex items-center gap-2">
+                    <span className="w-2 h-2 bg-brass rounded-full inline-block shrink-0" />
+                    {h.title}
+                  </h3>
+                  <p className="text-[13px] text-ink-soft leading-relaxed">{h.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap gap-4 justify-center">
+              <Link
+                href="/listings"
+                className="inline-flex items-center gap-2 px-7 py-4 font-mono text-[13px] tracking-wide uppercase rounded bg-ink text-paper hover:bg-blueprint-deep transition-colors"
+              >
+                Browse Listings →
+              </Link>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 px-7 py-4 font-mono text-[13px] tracking-wide uppercase rounded border border-ink/25 hover:border-brass hover:text-brass transition-colors"
+              >
+                Share Your Requirement →
+              </Link>
+            </div>
           </div>
+        </section>
 
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link
-              href="/listings"
-              className="inline-flex items-center gap-2 px-7 py-4 font-mono text-[13px] tracking-wide uppercase rounded bg-ink text-paper hover:bg-blueprint-deep transition-colors"
-            >
-              Browse Listings →
-            </Link>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 px-7 py-4 font-mono text-[13px] tracking-wide uppercase rounded border border-ink/25 hover:border-brass hover:text-brass transition-colors"
-            >
-              Share Your Requirement →
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <Contact />
+        <Contact />
+      </main>
 
       <Footer />
     </>

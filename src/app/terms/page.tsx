@@ -5,12 +5,16 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description: "Terms governing the use of the Beig Estates website and services.",
+  alternates: {
+    canonical: "/terms",
+  },
 };
 
 export default function Terms() {
   return (
     <>
       <Navbar />
+      <main id="main-content">
       <section className="py-16">
         <div className="max-w-2xl mx-auto px-6">
           <h1 className="font-serif font-semibold text-3xl mb-2">Terms of Service</h1>
@@ -82,6 +86,7 @@ export default function Terms() {
           </div>
         </div>
       </section>
+      </main>
       <Footer />
     </>
   );

@@ -79,8 +79,20 @@ export default function EnquiryForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5" noValidate={false}>
-      {/* Honeypot field — hidden from real users via CSS, visible to bots */}
-      <div style={{ position: "absolute", left: "-9999px" }} aria-hidden="true">
+      {/* Honeypot field — hidden from real users via multiple CSS layers, present in DOM for bots */}
+      <div
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          top: "-9999px",
+          width: "1px",
+          height: "1px",
+          overflow: "hidden",
+          opacity: 0,
+          pointerEvents: "none",
+        }}
+        aria-hidden="true"
+      >
         <label htmlFor="company">Company</label>
         <input
           type="text"

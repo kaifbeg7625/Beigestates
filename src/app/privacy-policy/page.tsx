@@ -5,12 +5,16 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "How Beig Estates collects, uses, and protects your information.",
+  alternates: {
+    canonical: "/privacy-policy",
+  },
 };
 
 export default function PrivacyPolicy() {
   return (
     <>
       <Navbar />
+      <main id="main-content">
       <section className="py-16">
         <div className="max-w-2xl mx-auto px-6">
           <h1 className="font-serif font-semibold text-3xl mb-2">Privacy Policy</h1>
@@ -81,6 +85,7 @@ export default function PrivacyPolicy() {
           </div>
         </div>
       </section>
+      </main>
       <Footer />
     </>
   );
