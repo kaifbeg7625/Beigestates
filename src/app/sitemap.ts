@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
+import { createPublicClient } from "@/lib/supabase/public";
 
 const SITE_URL = "https://beigestates.vercel.app";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  return [
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const staticPages: MetadataRoute.Sitemap = [
     {
       url: SITE_URL,
       lastModified: new Date(),
@@ -29,4 +30,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
   ];
+
+  try {
+    const supabase = createPublicClient();
+    const { data: properties } = await supabase
+      .from("properties")
+      .select("id, created_at");
+
+    const propertyPages: MetadataRoute.Sitemap = (properties ?? []).map((p) => ({
+      url: `${SITE_URL}/property/${p.id}`,
+      lastModified: new Date(p.created_at),
+      changeFrequency: "weekly",
+      priority: 0.85,
+    }));
+
+    return [...staticPages, ...propertyPages];
+  } catch {
+    return staticPages;
+  }
 }

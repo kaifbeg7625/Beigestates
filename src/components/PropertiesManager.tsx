@@ -26,11 +26,56 @@ export default function PropertiesManager({
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
 
   const supabase = createClient();
 
   function update<K extends keyof typeof emptyForm>(key: K, value: string) {
     setForm((f) => ({ ...f, [key]: value }));
+  }
+
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploading(true);
+    setUploadError("");
+    const uploadedUrls: string[] = [];
+
+    for (const file of Array.from(files)) {
+      const ext = file.name.split(".").pop();
+      const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+
+      const { error } = await supabase.storage
+        .from("property-photos")
+        .upload(path, file, { cacheControl: "3600", upsert: false });
+
+      if (error) {
+        setUploadError(`Failed to upload ${file.name}: ${error.message}`);
+        continue;
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from("property-photos")
+        .getPublicUrl(path);
+
+      if (publicUrlData?.publicUrl) {
+        uploadedUrls.push(publicUrlData.publicUrl);
+      }
+    }
+
+    if (uploadedUrls.length > 0) {
+      setForm((f) => ({
+        ...f,
+        imagesText: f.imagesText
+          ? `${f.imagesText}\n${uploadedUrls.join("\n")}`
+          : uploadedUrls.join("\n"),
+      }));
+    }
+
+    setUploading(false);
+    e.target.value = ""; // reset input so the same file can be re-selected if needed
   }
 
   function startEdit(p: Property) {
@@ -171,7 +216,27 @@ export default function PropertiesManager({
 
         <div>
           <label className="block font-mono text-[11px] uppercase tracking-wide text-ink-soft mb-1.5">
-            Photos — one image URL per line (upload each to imgur.com and paste the direct link; first one becomes the cover photo)
+            Upload Photos Directly
+          </label>
+          <label className="inline-flex items-center gap-2 px-4 py-2.5 rounded border border-ink/25 cursor-pointer hover:border-brass hover:text-brass transition-colors text-sm font-mono uppercase tracking-wide">
+            {uploading ? "Uploading..." : "Choose Photos →"}
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleFileUpload}
+              disabled={uploading}
+              className="hidden"
+            />
+          </label>
+          {uploadError && (
+            <p className="text-xs text-[#B5533C] mt-2">{uploadError}</p>
+          )}
+        </div>
+
+        <div>
+          <label className="block font-mono text-[11px] uppercase tracking-wide text-ink-soft mb-1.5">
+            Photo URLs — one per line (uploaded photos appear here automatically; first one becomes the cover photo)
           </label>
           <textarea
             value={form.imagesText}

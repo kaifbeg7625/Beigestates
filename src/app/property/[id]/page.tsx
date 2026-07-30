@@ -56,9 +56,40 @@ export default async function PropertyDetailPage({ params }: Props) {
       ? [property.image_url]
       : [];
 
+  const priceNumeric = property.price.replace(/[^0-9]/g, "");
+
   return (
     <>
       <Navbar />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "RealEstateListing",
+            name: property.title,
+            description: property.description || `${property.title} in ${property.location}`,
+            url: `https://beigestates.vercel.app/property/${property.id}`,
+            image: images,
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: property.location,
+              addressRegion: "Uttar Pradesh",
+              addressCountry: "IN",
+            },
+            offers: {
+              "@type": "Offer",
+              price: priceNumeric || undefined,
+              priceCurrency: "INR",
+              availability:
+                property.status === "Ready to Move"
+                  ? "https://schema.org/InStock"
+                  : "https://schema.org/PreOrder",
+            },
+          }),
+        }}
+      />
 
       <main id="main-content">
       <section className="py-12">

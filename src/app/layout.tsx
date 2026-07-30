@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
+import WhatsAppFloat from "@/components/WhatsAppFloat";
 import "./globals.css";
 
 // ⚠️ Update this if you connect a custom domain later
@@ -92,6 +93,7 @@ export default function RootLayout({
           Skip to main content
         </a>
         {children}
+        <WhatsAppFloat />
         <Analytics />
       </body>
     </html>
