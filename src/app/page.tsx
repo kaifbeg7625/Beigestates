@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import QuickExplore from "@/components/QuickExplore";
 import Story from "@/components/Story";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
@@ -30,6 +31,7 @@ export default function Home() {
       <Navbar />
       <main id="main-content">
         <Hero />
+        <QuickExplore />
         <Story />
 
         <section className="py-20 bg-white">
