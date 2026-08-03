@@ -18,7 +18,11 @@ export const metadata: Metadata = {
 
 export const revalidate = 60;
 
-export default function ListingsPage() {
+type Props = { searchParams: Promise<{ type?: string }> };
+
+export default async function ListingsPage({ searchParams }: Props) {
+  const { type } = await searchParams;
+
   return (
     <>
       <Navbar />
@@ -32,7 +36,7 @@ export default function ListingsPage() {
             Property Listings in Lucknow
           </h1>
         </div>
-        <Listings />
+        <Listings filterType={type} />
       </main>
       <Footer />
     </>

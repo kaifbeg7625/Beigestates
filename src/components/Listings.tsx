@@ -4,13 +4,17 @@ import type { Property } from "@/lib/types";
 import Link from "next/link";
 import Image from "next/image";
 
-export default async function Listings() {
+export default async function Listings({ filterType }: { filterType?: string }) {
   const supabase = createPublicClient();
-  const { data: properties } = await supabase
+  const { data: allProperties } = await supabase
     .from("properties")
     .select("*")
     .order("created_at", { ascending: false })
     .returns<Property[]>();
+
+  const properties = filterType
+    ? (allProperties ?? []).filter((p) => p.property_type === filterType)
+    : allProperties;
 
   return (
     <section id="listings" className="py-20 bg-white">
@@ -19,14 +23,28 @@ export default async function Listings() {
         <h2 className="font-serif font-semibold text-3xl mb-4 max-w-xl">
           Properties we&apos;re currently handling.
         </h2>
-        <p className="text-ink-soft max-w-xl leading-relaxed mb-12">
+        <p className="text-ink-soft max-w-xl leading-relaxed mb-6">
           A look at what&apos;s available right now. Reach out for full
           details, site visits, or to list your own property with us.
         </p>
 
+        {filterType && (
+          <div className="mb-8 flex items-center gap-2">
+            <span className="font-mono text-[11px] uppercase tracking-wide bg-brass/10 text-brass px-3 py-1.5 rounded-full">
+              {filterType}
+            </span>
+            <a href="/listings" className="font-mono text-[11px] uppercase tracking-wide text-ink-soft hover:text-ink">
+              Clear filter ×
+            </a>
+          </div>
+        )}
+
         {!properties || properties.length === 0 ? (
           <p className="text-ink-soft text-sm">
-            No listings yet — check back soon.
+            {filterType
+              ? `No ${filterType.toLowerCase()} listings right now — check back soon or `
+              : "No listings yet — check back soon."}
+            {filterType && <a href="/listings" className="text-brass">view all listings</a>}
           </p>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
