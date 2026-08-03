@@ -26,6 +26,7 @@ export default function PropertiesManager({
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
 
@@ -103,6 +104,7 @@ export default function PropertiesManager({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
+    setSaveError("");
 
     const imagesArray = form.imagesText
       .split("\n")
@@ -131,7 +133,9 @@ export default function PropertiesManager({
         .select()
         .single();
 
-      if (!error && data) {
+      if (error) {
+        setSaveError(error.message);
+      } else if (data) {
         setProperties((prev) =>
           prev.map((p) => (p.id === editingId ? (data as Property) : p))
         );
@@ -144,7 +148,9 @@ export default function PropertiesManager({
         .select()
         .single();
 
-      if (!error && data) {
+      if (error) {
+        setSaveError(error.message);
+      } else if (data) {
         setProperties((prev) => [data as Property, ...prev]);
         setForm(emptyForm);
       }
@@ -257,6 +263,12 @@ export default function PropertiesManager({
             className="w-full border-0 border-b-[1.5px] border-ink/25 bg-transparent py-2 outline-none focus:border-brass min-h-[70px]"
           />
         </div>
+
+        {saveError && (
+          <p className="text-sm text-[#B5533C] bg-[#B5533C]/5 border border-[#B5533C]/20 rounded p-3">
+            Failed to save: {saveError}
+          </p>
+        )}
 
         <div className="flex gap-3 pt-2">
           <button
