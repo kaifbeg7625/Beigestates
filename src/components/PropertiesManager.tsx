@@ -190,6 +190,7 @@ export default function PropertiesManager({
               <option>Flat</option>
               <option>Villa</option>
               <option>Plot</option>
+              <option>Rent</option>
               <option>Interior</option>
             </select>
           </div>

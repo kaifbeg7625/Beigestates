@@ -2,6 +2,7 @@ const quickLinks = [
   { label: "Flats", type: "Flat", icon: "🏢" },
   { label: "Villas", type: "Villa", icon: "🏡" },
   { label: "Plots", type: "Plot", icon: "📐" },
+  { label: "For Rent", type: "Rent", icon: "🔑" },
   { label: "Interiors", type: "Interior", icon: "🛋️" },
 ];
 
@@ -20,7 +21,7 @@ export default function QuickExplore() {
             View all listings →
           </a>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {quickLinks.map((l) => (
             <a
               key={l.type}
