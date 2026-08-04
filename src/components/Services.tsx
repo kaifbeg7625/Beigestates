@@ -25,7 +25,7 @@ const services = [
 
 export default function Services() {
   return (
-    <section className="py-20 bg-paper">
+    <section id="services" className="py-20 bg-paper">
       <div className="max-w-5xl mx-auto px-6">
         <SectionLabel>Our Services</SectionLabel>
         <h2 className="font-serif font-semibold text-3xl mb-4 max-w-xl">

@@ -25,7 +25,7 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section className="py-20 bg-white">
+    <section id="process" className="py-20 bg-white">
       <div className="max-w-5xl mx-auto px-6">
         <SectionLabel>Process</SectionLabel>
         <h2 className="font-serif font-semibold text-3xl mb-4 max-w-xl">
