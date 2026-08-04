@@ -62,6 +62,22 @@ export default function Contact() {
           </a>
         </p>
       </div>
+
+      <div className="max-w-5xl mx-auto px-6 mt-14">
+        <p className="font-mono text-[11px] uppercase tracking-wide text-ink-soft mb-3 text-center">
+          Find Us — Mithai Wala Chauraha, Gomti Nagar, Lucknow
+        </p>
+        <div className="rounded overflow-hidden border border-ink/10">
+          <iframe
+            src="https://maps.google.com/maps?q=Mithai%20Wala%20Chauraha%2C%20Gomti%20Nagar%2C%20Lucknow&t=&z=15&ie=UTF8&iwloc=&output=embed"
+            width="100%"
+            height="320"
+            style={{ border: 0 }}
+            loading="lazy"
+            title="Beig Estates location — Mithai Wala Chauraha, Gomti Nagar, Lucknow"
+          />
+        </div>
+      </div>
     </section>
   );
 }

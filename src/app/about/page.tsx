@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProblemSolution from "@/components/ProblemSolution";
+import Services from "@/components/Services";
 import HowItWorks from "@/components/HowItWorks";
 import Trust from "@/components/Trust";
 import FAQ from "@/components/FAQ";
@@ -34,6 +35,7 @@ export default function AboutPage() {
           </h1>
         </div>
         <ProblemSolution />
+        <Services />
         <HowItWorks />
         <Trust />
         <FAQ />

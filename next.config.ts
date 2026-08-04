@@ -27,7 +27,7 @@ const securityHeaders = [
       "img-src 'self' data: https://images.pexels.com https://images.unsplash.com https://*.supabase.co https://i.ytimg.com https://img.youtube.com",
       "media-src 'self' https://*.supabase.co",
       "connect-src 'self' https://*.supabase.co",
-      "frame-src 'self' https://www.youtube.com https://youtube.com",
+      "frame-src 'self' https://www.youtube.com https://youtube.com https://maps.google.com https://www.google.com",
       "frame-ancestors 'self'",
     ].join("; "),
   },
