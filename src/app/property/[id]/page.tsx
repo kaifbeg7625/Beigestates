@@ -98,7 +98,7 @@ export default async function PropertyDetailPage({ params }: Props) {
             ← Back to listings
           </a>
 
-          <PropertyGallery images={images} title={property.title} />
+          <PropertyGallery images={images} videos={property.videos ?? []} title={property.title} />
 
           <div className="grid sm:grid-cols-3 gap-10 mt-10">
             <div className="sm:col-span-2">

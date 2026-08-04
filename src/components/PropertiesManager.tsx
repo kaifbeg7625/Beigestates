@@ -14,6 +14,7 @@ const emptyForm = {
   bathrooms: "",
   status: "Ready to Move",
   imagesText: "",
+  videosText: "",
   description: "",
 };
 
@@ -91,6 +92,7 @@ export default function PropertiesManager({
       bathrooms: p.bathrooms ?? "",
       status: p.status,
       imagesText: (p.images && p.images.length > 0 ? p.images : p.image_url ? [p.image_url] : []).join("\n"),
+      videosText: (p.videos ?? []).join("\n"),
       description: p.description ?? "",
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -111,6 +113,11 @@ export default function PropertiesManager({
       .map((s) => s.trim())
       .filter(Boolean);
 
+    const videosArray = form.videosText
+      .split("\n")
+      .map((s) => s.trim())
+      .filter(Boolean);
+
     const payload = {
       title: form.title,
       location: form.location,
@@ -121,6 +128,7 @@ export default function PropertiesManager({
       bathrooms: form.bathrooms || null,
       status: form.status,
       images: imagesArray,
+      videos: videosArray,
       image_url: imagesArray[0] || null,
       description: form.description || null,
     };
@@ -250,6 +258,18 @@ export default function PropertiesManager({
             onChange={(e) => update("imagesText", e.target.value)}
             placeholder={"https://...jpg\nhttps://...jpg\nhttps://...jpg"}
             className="w-full border-0 border-b-[1.5px] border-ink/25 bg-transparent py-2 outline-none focus:border-brass min-h-[90px] font-mono text-sm"
+          />
+        </div>
+
+        <div>
+          <label className="block font-mono text-[11px] uppercase tracking-wide text-ink-soft mb-1.5">
+            Video URLs — one per line (YouTube links or direct .mp4 links)
+          </label>
+          <textarea
+            value={form.videosText}
+            onChange={(e) => update("videosText", e.target.value)}
+            placeholder={"https://youtube.com/watch?v=...\nhttps://...mp4"}
+            className="w-full border-0 border-b-[1.5px] border-ink/25 bg-transparent py-2 outline-none focus:border-brass min-h-[60px] font-mono text-sm"
           />
         </div>
 

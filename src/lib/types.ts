@@ -10,6 +10,7 @@ export type Property = {
   status: string;
   image_url: string | null;
   images: string[] | null;
+  videos: string[] | null;
   description: string | null;
   created_at: string;
 };
