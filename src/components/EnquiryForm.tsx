@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Button } from "./Button";
 
 const initialState = {
   name: "",
@@ -69,7 +70,7 @@ export default function EnquiryForm() {
   if (status === "done") {
     return (
       <div className="rounded border border-brass/40 bg-brass/5 p-6 text-center">
-        <p className="font-serif text-lg font-semibold mb-1">Thank you!</p>
+        <p className="font-extrabold text-lg font-semibold mb-1">Thank you!</p>
         <p className="text-sm text-ink-soft">
           Your requirement has been received. We&apos;ll be in touch shortly.
         </p>
@@ -215,29 +216,34 @@ export default function EnquiryForm() {
       </Field>
 
       {status === "error" && (
-        <p className="text-sm text-[#B5533C]">
+        <p className="text-sm text-danger">
           Something went wrong submitting your requirement. Please try again
           or reach out on WhatsApp directly.
         </p>
       )}
 
-      <button
+      <Button
         type="submit"
+        variant="secondary"
         disabled={status === "submitting"}
-        className="w-full mt-2 py-4 rounded bg-ink text-paper font-mono text-[13px] tracking-wide uppercase hover:bg-blueprint-deep transition-colors disabled:opacity-60"
+        className="w-full mt-2"
+        arrow={status !== "submitting"}
       >
-        {status === "submitting" ? "Submitting..." : "Submit requirement →"}
-      </button>
+        {status === "submitting" ? "Submitting…" : "Submit requirement"}
+      </Button>
 
       <style jsx>{`
         .input {
+          /* Was a hardcoded rgba(26,39,51,…) — the old navy ink, which no
+             longer exists in the palette. Follows the token now. */
           width: 100%;
           border: none;
-          border-bottom: 1.5px solid rgba(26, 39, 51, 0.25);
+          border-bottom: 1.5px solid color-mix(in srgb, var(--ink) 25%, transparent);
           background: transparent;
-          font-size: 16px;
-          padding: 8px 2px 10px;
+          font-size: 1.0625rem;
+          padding: 10px 2px 12px;
           outline: none;
+          transition: border-color 0.2s;
         }
         .input:focus {
           border-bottom-color: var(--brass);
@@ -260,7 +266,7 @@ function Field({
     <div>
       <label
         htmlFor={htmlFor}
-        className="block font-mono text-[11px] uppercase tracking-wide text-ink-soft mb-2"
+        className="block label text-ink-soft mb-2"
       >
         {label}
       </label>

@@ -115,10 +115,10 @@ export default function IntentPopup() {
           </svg>
         </button>
 
-        <p className="font-mono text-[11px] uppercase tracking-wide text-brass mb-2">
+        <p className="label text-brass mb-2">
           Quick question
         </p>
-        <h3 id="intent-popup-title" className="font-serif font-semibold text-xl mb-5">
+        <h3 id="intent-popup-title" className="font-extrabold text-xl mb-5">
           What brings you here today?
         </h3>
 

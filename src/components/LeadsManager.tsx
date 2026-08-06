@@ -42,7 +42,7 @@ export default function LeadsManager({ initialLeads }: { initialLeads: Lead[] })
           <button
             key={s}
             onClick={() => setFilter(s)}
-            className={`px-4 py-2 rounded font-mono text-xs uppercase tracking-wide border ${
+            className={`px-4 py-2 rounded label border ${
               filter === s
                 ? "bg-ink text-paper border-ink"
                 : "border-ink/20 text-ink-soft hover:border-brass hover:text-brass"
@@ -55,7 +55,7 @@ export default function LeadsManager({ initialLeads }: { initialLeads: Lead[] })
 
       <div className="space-y-3">
         {filtered.map((lead) => (
-          <div key={lead.id} className="bg-white rounded border border-ink/10 p-5">
+          <div key={lead.id} className="surface rounded-lg p-5">
             <div className="flex items-start justify-between gap-4 mb-3">
               <div>
                 <p className="font-semibold">{lead.name}</p>
@@ -98,13 +98,13 @@ export default function LeadsManager({ initialLeads }: { initialLeads: Lead[] })
               <a
                 href={`https://wa.me/91${lead.mobile}`}
                 target="_blank"
-                className="font-mono text-xs uppercase text-brass"
+                className="label text-brass"
               >
                 WhatsApp
               </a>
               <button
                 onClick={() => handleDelete(lead.id)}
-                className="font-mono text-xs uppercase text-[#B5533C] ml-auto"
+                className="label text-danger ml-auto"
               >
                 Delete
               </button>
@@ -127,7 +127,7 @@ export default function LeadsManager({ initialLeads }: { initialLeads: Lead[] })
 function Detail({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="font-mono text-[10px] uppercase tracking-wide text-ink-soft/70">{label}</p>
+      <p className="label text-ink-soft/70">{label}</p>
       <p className="font-medium">{value}</p>
     </div>
   );

@@ -1,34 +1,41 @@
-import { createPublicClient } from "@/lib/supabase/public";
-import { SectionLabel } from "./ProblemSolution";
-import type { Property } from "@/lib/types";
+import { getProperties } from "@/lib/properties";
 import ListingsGrid from "./ListingsGrid";
 
-export default async function Listings({ filterType }: { filterType?: string }) {
-  const supabase = createPublicClient();
-  const { data: properties } = await supabase
-    .from("properties")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .returns<Property[]>();
+// The heading now lives in PageHeader on the listings page, so this is just
+// the grid and its filters.
+export default async function Listings({
+  filterType,
+  initialKeyword,
+  initialBeds,
+  initialBudget,
+}: {
+  filterType?: string;
+  initialKeyword?: string;
+  initialBeds?: string;
+  initialBudget?: number;
+}) {
+  const properties = await getProperties();
 
   return (
-    <section id="listings" className="py-20 bg-white">
-      <div className="max-w-5xl mx-auto px-6">
-        <SectionLabel>Current Listings</SectionLabel>
-        <h2 className="font-serif font-semibold text-3xl mb-4 max-w-xl">
-          Properties we&apos;re currently handling.
-        </h2>
-        <p className="text-ink-soft max-w-xl leading-relaxed mb-8">
-          A look at what&apos;s available right now. Reach out for full
-          details, site visits, or to list your own property with us.
-        </p>
-
-        {!properties || properties.length === 0 ? (
-          <p className="text-ink-soft text-sm">
-            No listings yet — check back soon.
-          </p>
+    <section id="listings" className="py-16 sm:py-20 bg-shell">
+      <div className="container-page">
+        {properties.length === 0 ? (
+          <div className="surface rounded-lg p-12 text-center">
+            <p className="font-extrabold text-2xl mb-3">No listings up yet.</p>
+            <p className="text-ink-soft max-w-md mx-auto">
+              We&apos;re adding properties as they come in. Tell us what
+              you&apos;re looking for and we&apos;ll get in touch when
+              something fits.
+            </p>
+          </div>
         ) : (
-          <ListingsGrid properties={properties} initialType={filterType} />
+          <ListingsGrid
+            properties={properties}
+            initialType={filterType}
+            initialKeyword={initialKeyword}
+            initialBeds={initialBeds}
+            initialBudget={initialBudget}
+          />
         )}
       </div>
     </section>

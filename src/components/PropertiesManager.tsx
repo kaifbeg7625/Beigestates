@@ -179,9 +179,9 @@ export default function PropertiesManager({
     <div className="space-y-10">
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded p-6 border border-ink/10 space-y-4"
+        className="surface rounded-lg p-6 space-y-4"
       >
-        <h2 className="font-mono text-xs uppercase tracking-wide text-ink-soft">
+        <h2 className="label text-ink-soft">
           {editingId ? "Edit Property" : "Add New Property"}
         </h2>
 
@@ -193,7 +193,7 @@ export default function PropertiesManager({
         <div className="grid sm:grid-cols-3 gap-4">
           <LabeledInput label="Price (e.g. ₹42,00,000)" value={form.price} onChange={(v) => update("price", v)} required />
           <div>
-            <label className="block font-mono text-[11px] uppercase tracking-wide text-ink-soft mb-1.5">
+            <label className="block label text-ink-soft mb-1.5">
               Type
             </label>
             <select
@@ -209,7 +209,7 @@ export default function PropertiesManager({
             </select>
           </div>
           <div>
-            <label className="block font-mono text-[11px] uppercase tracking-wide text-ink-soft mb-1.5">
+            <label className="block label text-ink-soft mb-1.5">
               Status
             </label>
             <select
@@ -230,7 +230,7 @@ export default function PropertiesManager({
         </div>
 
         <div>
-          <label className="block font-mono text-[11px] uppercase tracking-wide text-ink-soft mb-1.5">
+          <label className="block label text-ink-soft mb-1.5">
             Upload Photos Directly
           </label>
           <label className="inline-flex items-center gap-2 px-4 py-2.5 rounded border border-ink/25 cursor-pointer hover:border-brass hover:text-brass transition-colors text-sm font-mono uppercase tracking-wide">
@@ -245,12 +245,12 @@ export default function PropertiesManager({
             />
           </label>
           {uploadError && (
-            <p className="text-xs text-[#B5533C] mt-2">{uploadError}</p>
+            <p className="text-xs text-danger mt-2">{uploadError}</p>
           )}
         </div>
 
         <div>
-          <label className="block font-mono text-[11px] uppercase tracking-wide text-ink-soft mb-1.5">
+          <label className="block label text-ink-soft mb-1.5">
             Photo URLs — one per line (uploaded photos appear here automatically; first one becomes the cover photo)
           </label>
           <textarea
@@ -262,7 +262,7 @@ export default function PropertiesManager({
         </div>
 
         <div>
-          <label className="block font-mono text-[11px] uppercase tracking-wide text-ink-soft mb-1.5">
+          <label className="block label text-ink-soft mb-1.5">
             Video URLs — one per line (YouTube links or direct .mp4 links)
           </label>
           <textarea
@@ -274,7 +274,7 @@ export default function PropertiesManager({
         </div>
 
         <div>
-          <label className="block font-mono text-[11px] uppercase tracking-wide text-ink-soft mb-1.5">
+          <label className="block label text-ink-soft mb-1.5">
             Description (optional)
           </label>
           <textarea
@@ -285,7 +285,7 @@ export default function PropertiesManager({
         </div>
 
         {saveError && (
-          <p className="text-sm text-[#B5533C] bg-[#B5533C]/5 border border-[#B5533C]/20 rounded p-3">
+          <p className="text-sm text-danger bg-danger/5 border border-danger/20 rounded p-3">
             Failed to save: {saveError}
           </p>
         )}
@@ -294,7 +294,7 @@ export default function PropertiesManager({
           <button
             type="submit"
             disabled={saving}
-            className="px-6 py-3 rounded bg-ink text-paper font-mono text-[13px] uppercase tracking-wide hover:bg-blueprint-deep transition-colors disabled:opacity-60"
+            className="px-6 py-3 rounded bg-ink text-paper font-bold hover:bg-blueprint-deep transition-colors disabled:opacity-60"
           >
             {saving ? "Saving..." : editingId ? "Update Property" : "Add Property"}
           </button>
@@ -302,7 +302,7 @@ export default function PropertiesManager({
             <button
               type="button"
               onClick={cancelEdit}
-              className="px-6 py-3 rounded border border-ink/25 font-mono text-[13px] uppercase tracking-wide"
+              className="px-6 py-3 rounded border border-ink/25 font-bold"
             >
               Cancel
             </button>
@@ -311,7 +311,7 @@ export default function PropertiesManager({
       </form>
 
       <div>
-        <h2 className="font-mono text-xs uppercase tracking-wide text-ink-soft mb-4">
+        <h2 className="label text-ink-soft mb-4">
           All Listings ({properties.length})
         </h2>
         <div className="space-y-3">
@@ -320,7 +320,7 @@ export default function PropertiesManager({
             return (
             <div
               key={p.id}
-              className="bg-white rounded border border-ink/10 p-4 flex items-center gap-4"
+              className="surface rounded-lg p-4 flex items-center gap-4"
             >
               <div
                 className="w-20 h-16 rounded bg-cover bg-center bg-[#e8e2d4] shrink-0"
@@ -338,13 +338,13 @@ export default function PropertiesManager({
               </div>
               <button
                 onClick={() => startEdit(p)}
-                className="font-mono text-xs uppercase text-brass shrink-0"
+                className="label text-brass shrink-0"
               >
                 Edit
               </button>
               <button
                 onClick={() => handleDelete(p.id)}
-                className="font-mono text-xs uppercase text-[#B5533C] shrink-0"
+                className="label text-danger shrink-0"
               >
                 Delete
               </button>
@@ -373,7 +373,7 @@ function LabeledInput({
 }) {
   return (
     <div>
-      <label className="block font-mono text-[11px] uppercase tracking-wide text-ink-soft mb-1.5">
+      <label className="block label text-ink-soft mb-1.5">
         {label}
       </label>
       <input

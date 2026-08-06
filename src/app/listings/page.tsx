@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Listings from "@/components/Listings";
+import PageHeader from "@/components/PageHeader";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -18,25 +19,32 @@ export const metadata: Metadata = {
 
 export const revalidate = 60;
 
-type Props = { searchParams: Promise<{ type?: string }> };
+type Props = {
+  searchParams: Promise<{
+    type?: string;
+    q?: string;
+    beds?: string;
+    budget?: string;
+  }>;
+};
 
 export default async function ListingsPage({ searchParams }: Props) {
-  const { type } = await searchParams;
+  const { type, q, beds, budget } = await searchParams;
 
   return (
     <>
       <Navbar />
       <main id="main-content">
-        <div className="max-w-5xl mx-auto px-6 pt-14 pb-2">
-          <div className="font-mono text-[11px] tracking-[0.14em] uppercase text-brass mb-3 flex items-center gap-2">
-            <span className="w-[18px] h-px bg-brass" />
-            Listings
-          </div>
-          <h1 className="font-serif font-semibold text-3xl">
-            Property Listings in Lucknow
-          </h1>
-        </div>
-        <Listings filterType={type} />
+        <PageHeader
+          title="Property listings in Lucknow"
+          crumbs={[{ label: "Listings" }]}
+        />
+        <Listings
+          filterType={type}
+          initialKeyword={q}
+          initialBeds={beds}
+          initialBudget={budget ? Number(budget) : undefined}
+        />
       </main>
       <Footer />
     </>

@@ -16,8 +16,8 @@ export default function PrivacyPolicy() {
       <Navbar />
       <main id="main-content">
       <section className="py-16">
-        <div className="max-w-2xl mx-auto px-6">
-          <h1 className="font-serif font-semibold text-3xl mb-2">Privacy Policy</h1>
+        <div className="container-page">
+          <h1 className="font-extrabold text-3xl mb-2">Privacy Policy</h1>
           <p className="text-sm text-ink-soft mb-10">Last updated: July 2026</p>
 
           <div className="space-y-6 text-sm leading-relaxed">

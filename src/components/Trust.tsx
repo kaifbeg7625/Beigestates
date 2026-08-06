@@ -18,9 +18,9 @@ const items = [
 export default function Trust() {
   return (
     <section id="trust" className="py-20">
-      <div className="max-w-5xl mx-auto px-6">
+      <div className="container-page">
         <SectionLabel>Why Trust This</SectionLabel>
-        <h2 className="font-serif font-semibold text-3xl mb-4 max-w-xl">
+        <h2 className="font-extrabold text-3xl mb-4 max-w-xl">
           Built for accountability, not volume.
         </h2>
         <p className="text-ink-soft max-w-xl leading-relaxed mb-12">
@@ -31,11 +31,11 @@ export default function Trust() {
         <div className="grid sm:grid-cols-3 gap-8">
           {items.map((item) => (
             <div key={item.title}>
-              <h4 className="text-[15px] font-semibold mb-2 flex items-center gap-2">
+              <h4 className="text-base font-semibold mb-2 flex items-center gap-2">
                 <span className="w-2 h-2 bg-brass rounded-full inline-block shrink-0" />
                 {item.title}
               </h4>
-              <p className="text-[13px] text-ink-soft leading-relaxed">{item.desc}</p>
+              <p className="text-sm text-ink-soft leading-relaxed">{item.desc}</p>
             </div>
           ))}
         </div>

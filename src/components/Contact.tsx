@@ -1,81 +1,95 @@
 import { SectionLabel } from "./ProblemSolution";
 import EnquiryForm from "./EnquiryForm";
-
-const WHATSAPP_NUMBER = "917497937625";
-const WHATSAPP_NUMBER_2 = "919026785261";
-const EMAIL = "kaifbegmirza7497@gmail.com";
-const WA_MESSAGE = encodeURIComponent(
-  "Hi, I'm looking for help with a property requirement through Beig Estates. Can we discuss?"
-);
+import { SITE, waLink } from "@/lib/site";
+import { IconPhone, IconWhatsApp, IconMail, IconPin } from "./Icons";
 
 export default function Contact() {
   return (
-    <section id="contact" className="py-24 bg-paper">
-      <div className="max-w-2xl mx-auto px-6 text-center">
-        <div className="flex justify-center">
+    <section id="contact" className="py-24 sm:py-28 bg-paper">
+      <div className="container-page">
+        <div className="max-w-2xl mb-14">
           <SectionLabel>Get Started</SectionLabel>
-        </div>
-        <h2 className="font-serif font-semibold text-3xl mb-4">
-          Ready to find the right property?
-        </h2>
-        <p className="text-ink-soft leading-relaxed mb-10">
-          Share your requirement below, message us on WhatsApp, or call
-          directly — whichever&apos;s easiest for you.
-        </p>
-
-        <div className="text-left bg-white rounded p-8 border border-ink/10 mb-8">
-          <EnquiryForm />
+          <h2 className="font-extrabold text-3xl sm:text-4xl leading-tight mb-5">
+            Tell us what you&apos;re looking for.
+          </h2>
+          <p className="text-ink-soft leading-relaxed">
+            Fill in the form and we&apos;ll come back to you, or skip it and
+            call — whichever&apos;s easier.
+          </p>
         </div>
 
-        <div className="flex gap-4 flex-wrap justify-center mb-5">
-          <a
-            href={`https://wa.me/${WHATSAPP_NUMBER}?text=${WA_MESSAGE}`}
-            target="_blank"
-            className="inline-flex items-center gap-2 px-7 py-4 font-mono text-[13px] tracking-wide uppercase rounded bg-brass text-blueprint-deep font-medium hover:bg-brass-bright transition-colors"
-          >
-            Message Us on WhatsApp →
-          </a>
-          <a
-            href={`mailto:${EMAIL}?subject=Property%20Requirement`}
-            className="inline-flex items-center gap-2 px-7 py-4 font-mono text-[13px] tracking-wide uppercase rounded border border-ink/25 text-ink hover:border-brass hover:text-brass transition-colors"
-          >
-            Email Us →
-          </a>
-        </div>
+        <div className="grid lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-14 items-start">
+          <div className="surface-raised rounded-lg p-7 sm:p-9">
+            <EnquiryForm />
+          </div>
 
-        <p className="text-[13px] text-ink-soft font-mono">
-          Or call directly:{" "}
-          <a href="tel:+917497937625" className="text-ink font-semibold">
-            +91 74979 37625
-          </a>{" "}
-          ·{" "}
-          <a href="tel:+919026785261" className="text-ink font-semibold">
-            +91 90267 85261
-          </a>{" "}
-          ·{" "}
-          <a
-            href={`https://wa.me/${WHATSAPP_NUMBER_2}?text=${WA_MESSAGE}`}
-            target="_blank"
-            className="text-brass font-semibold"
-          >
-            WhatsApp
-          </a>
-        </p>
-      </div>
+          <div className="space-y-4">
+            <a
+              href={waLink(SITE.phones[0].wa)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-4 p-5 rounded-md bg-brass text-blueprint-deep font-semibold shadow-e2 transition-all duration-300 hover:bg-brass-bright hover:-translate-y-1 hover:shadow-brass"
+            >
+              <IconWhatsApp className="w-6 h-6 shrink-0" />
+              <span className="flex-1">Message us on WhatsApp</span>
+              <span className="transition-transform duration-300 group-hover:translate-x-1">
+                →
+              </span>
+            </a>
 
-      <div className="max-w-5xl mx-auto px-6 mt-14">
-        <p className="font-mono text-[11px] uppercase tracking-wide text-ink-soft mb-3 text-center">
-          Find Us — Mithai Wala Chauraha, Gomti Nagar, Lucknow
-        </p>
-        <div className="rounded overflow-hidden border border-ink/10">
-          <iframe
-            src="https://maps.google.com/maps?q=Mithai%20Wala%20Chauraha%2C%20Gomti%20Nagar%2C%20Lucknow&t=&z=15&ie=UTF8&iwloc=&output=embed"
-            width="100%"
-            height="320"
-            style={{ border: 0 }}
-            loading="lazy"
-            title="Beig Estates location — Mithai Wala Chauraha, Gomti Nagar, Lucknow"
-          />
+            <div className="surface rounded-lg divide-y divide-ink/8">
+              {SITE.phones.map((p) => (
+                <a
+                  key={p.tel}
+                  href={`tel:${p.tel}`}
+                  className="group flex items-center gap-4 p-5 transition-colors hover:bg-paper/70"
+                >
+                  <IconPhone className="w-5 h-5 text-brass shrink-0" />
+                  <span className="font-semibold transition-colors group-hover:text-brass">
+                    {p.display}
+                  </span>
+                </a>
+              ))}
+              <a
+                href={`mailto:${SITE.email}?subject=Property%20Requirement`}
+                className="group flex items-center gap-4 p-5 transition-colors hover:bg-paper/70"
+              >
+                <IconMail className="w-5 h-5 text-brass shrink-0" />
+                <span className="text-sm break-all transition-colors group-hover:text-brass">
+                  {SITE.email}
+                </span>
+              </a>
+            </div>
+
+            <div className="rounded-md overflow-hidden surface">
+              <div className="flex items-start gap-4 p-5">
+                <IconPin className="w-5 h-5 text-brass shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-semibold mb-1">{SITE.address.line}</p>
+                  <p className="text-sm text-ink-soft mb-2.5">
+                    {SITE.address.city}, {SITE.address.state}
+                  </p>
+                  <a
+                    href={SITE.mapsLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-brass hover:text-brass-bright transition-colors"
+                  >
+                    Open in Google Maps →
+                  </a>
+                </div>
+              </div>
+              <iframe
+                src={SITE.mapsEmbed}
+                width="100%"
+                height="230"
+                style={{ border: 0 }}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title={`Beig Estates location — ${SITE.address.line}, ${SITE.address.city}`}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </section>

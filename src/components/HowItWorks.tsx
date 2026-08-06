@@ -25,10 +25,10 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section id="process" className="py-20 bg-white">
-      <div className="max-w-5xl mx-auto px-6">
+    <section id="process" className="py-20 bg-shell">
+      <div className="container-page">
         <SectionLabel>Process</SectionLabel>
-        <h2 className="font-serif font-semibold text-3xl mb-4 max-w-xl">
+        <h2 className="font-extrabold text-3xl mb-4 max-w-xl">
           From enquiry to closed deal — in four steps.
         </h2>
         <p className="text-ink-soft max-w-xl leading-relaxed mb-12">
@@ -39,11 +39,11 @@ export default function HowItWorks() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {steps.map((s) => (
             <div key={s.num} className="bg-paper rounded p-6 border border-ink/10">
-              <div className="font-serif text-2xl font-semibold text-brass mb-3.5">
+              <div className="font-extrabold text-2xl font-semibold text-brass mb-3.5">
                 {s.num}
               </div>
-              <h4 className="text-[15px] font-semibold mb-2">{s.title}</h4>
-              <p className="text-[13px] text-ink-soft leading-relaxed">{s.desc}</p>
+              <h4 className="text-base font-semibold mb-2">{s.title}</h4>
+              <p className="text-sm text-ink-soft leading-relaxed">{s.desc}</p>
             </div>
           ))}
         </div>
