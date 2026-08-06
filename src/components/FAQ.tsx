@@ -25,17 +25,17 @@ const faqs = [
 
 export default function FAQ() {
   return (
-    <section id="faq" className="py-20 bg-white">
+    <section id="faq" className="py-20 bg-shell">
       <div className="max-w-3xl mx-auto px-6">
         <SectionLabel>FAQ</SectionLabel>
-        <h2 className="font-serif font-semibold text-3xl mb-10">
+        <h2 className="font-extrabold text-3xl mb-10">
           Common questions.
         </h2>
 
         <div className="space-y-6">
           {faqs.map((item) => (
             <div key={item.q} className="border-b border-ink/10 pb-6">
-              <h3 className="font-semibold text-[15px] mb-2">{item.q}</h3>
+              <h3 className="font-semibold text-base mb-2">{item.q}</h3>
               <p className="text-sm text-ink-soft leading-relaxed">{item.a}</p>
             </div>
           ))}

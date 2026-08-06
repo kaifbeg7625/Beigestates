@@ -1,7 +1,8 @@
 "use client";
 
-const WHATSAPP_NUMBER = "917497937625";
-const EMAIL = "kaifbegmirza7497@gmail.com";
+import { SITE, waLink } from "@/lib/site";
+import { Button, ButtonLink } from "./Button";
+import { IconWhatsApp, IconMail } from "./Icons";
 
 export default function EnquireAboutProperty({
   propertyTitle,
@@ -15,8 +16,7 @@ export default function EnquireAboutProperty({
   );
 
   function goToForm() {
-    const service =
-      propertyType === "Plot" ? "Buy Plot" : "Buy Property";
+    const service = propertyType === "Plot" ? "Buy Plot" : "Buy Property";
     sessionStorage.setItem("beig_intent_service", service);
     sessionStorage.setItem(
       "beig_intent_notes",
@@ -26,32 +26,38 @@ export default function EnquireAboutProperty({
   }
 
   return (
-    <div className="bg-white rounded border border-ink/10 p-6 sticky top-6">
-      <p className="font-mono text-[11px] uppercase tracking-wide text-ink-soft mb-4">
-        Interested in this property?
-      </p>
+    // Uses the shared Button so these match every other control on the site —
+    // they were three differently-styled hand-rolled buttons before.
+    <div className="surface rounded-xl p-7">
+      <p className="label text-ink-soft mb-5">Interested in this property?</p>
 
-      <button
-        onClick={goToForm}
-        className="w-full mb-3 py-3.5 rounded bg-ink text-paper font-mono text-[13px] uppercase tracking-wide hover:bg-blueprint-deep transition-colors"
-      >
-        Request Full Details
-      </button>
+      <div className="space-y-3">
+        <Button onClick={goToForm} variant="secondary" className="w-full">
+          Request full details
+        </Button>
 
-      <a
-        href={`https://wa.me/${WHATSAPP_NUMBER}?text=${waMessage}`}
-        target="_blank"
-        className="w-full mb-3 py-3.5 rounded bg-brass text-blueprint-deep font-mono text-[13px] uppercase tracking-wide hover:bg-brass-bright transition-colors flex items-center justify-center"
-      >
-        WhatsApp Us →
-      </a>
+        <ButtonLink
+          href={waLink(SITE.phones[0].wa, waMessage)}
+          target="_blank"
+          rel="noopener noreferrer"
+          variant="ghost"
+          className="w-full"
+        >
+          <IconWhatsApp className="w-[18px] h-[18px]" />
+          WhatsApp us
+        </ButtonLink>
 
-      <a
-        href={`mailto:${EMAIL}?subject=Enquiry: ${propertyTitle}`}
-        className="w-full py-3.5 rounded border border-ink/25 font-mono text-[13px] uppercase tracking-wide hover:border-brass hover:text-brass transition-colors flex items-center justify-center"
-      >
-        Email Us →
-      </a>
+        <ButtonLink
+          href={`mailto:${SITE.email}?subject=${encodeURIComponent(
+            `Enquiry: ${propertyTitle}`
+          )}`}
+          variant="ghost"
+          className="w-full"
+        >
+          <IconMail className="w-[18px] h-[18px]" />
+          Email us
+        </ButtonLink>
+      </div>
     </div>
   );
 }

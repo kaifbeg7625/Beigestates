@@ -6,11 +6,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="min-h-screen bg-paper">
       <nav className="bg-blueprint py-4">
         <div className="max-w-5xl mx-auto px-6 flex items-center justify-between">
-          <div className="font-serif font-semibold text-lg text-paper flex items-center gap-4">
+          <div className="font-extrabold text-lg text-paper flex items-center gap-4">
             Beig Estates{" "}
             <span className="font-mono text-xs text-brass-bright uppercase">Admin</span>
           </div>
-          <div className="flex items-center gap-6 text-[13px] font-mono">
+          <div className="flex items-center gap-6 text-base">
             <Link href="/admin" className="text-paper/75 hover:text-brass-bright">
               Dashboard
             </Link>

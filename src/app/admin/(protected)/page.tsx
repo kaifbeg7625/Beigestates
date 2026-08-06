@@ -19,7 +19,7 @@ export default async function AdminDashboard() {
 
   return (
     <div>
-      <h1 className="font-serif font-semibold text-2xl mb-8">Dashboard</h1>
+      <h1 className="font-extrabold text-2xl mb-8">Dashboard</h1>
 
       <div className="grid sm:grid-cols-3 gap-5 mb-10">
         <StatCard label="Total Properties" value={propertyCount ?? 0} />
@@ -30,13 +30,13 @@ export default async function AdminDashboard() {
       <div className="flex gap-4">
         <Link
           href="/admin/properties"
-          className="px-6 py-3 rounded bg-ink text-paper font-mono text-[13px] uppercase tracking-wide hover:bg-blueprint-deep transition-colors"
+          className="px-6 py-3 rounded bg-ink text-paper font-bold hover:bg-blueprint-deep transition-colors"
         >
           Manage Properties
         </Link>
         <Link
           href="/admin/leads"
-          className="px-6 py-3 rounded border border-ink/25 font-mono text-[13px] uppercase tracking-wide hover:border-brass hover:text-brass transition-colors"
+          className="px-6 py-3 rounded border border-ink/25 font-bold hover:border-brass hover:text-brass transition-colors"
         >
           View Leads
         </Link>
@@ -57,11 +57,11 @@ function StatCard({
   return (
     <div
       className={`rounded p-6 border ${
-        highlight ? "border-brass bg-brass/5" : "border-ink/10 bg-white"
+        highlight ? "border-brass bg-brass/5" : "border-ink/10 bg-shell"
       }`}
     >
-      <div className="font-serif text-3xl font-semibold text-brass mb-1">{value}</div>
-      <div className="font-mono text-[11px] uppercase tracking-wide text-ink-soft">
+      <div className="font-extrabold text-3xl font-semibold text-brass mb-1">{value}</div>
+      <div className="label text-ink-soft">
         {label}
       </div>
     </div>

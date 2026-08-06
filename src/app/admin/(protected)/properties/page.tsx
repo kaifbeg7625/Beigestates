@@ -12,7 +12,7 @@ export default async function PropertiesPage() {
 
   return (
     <div>
-      <h1 className="font-serif font-semibold text-2xl mb-8">Properties</h1>
+      <h1 className="font-extrabold text-2xl mb-8">Properties</h1>
       <PropertiesManager initialProperties={properties ?? []} />
     </div>
   );

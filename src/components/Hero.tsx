@@ -1,63 +1,97 @@
 import Image from "next/image";
+import { getProperties } from "@/lib/properties";
+import HeroSearch from "./HeroSearch";
+import HeroShowcase from "./HeroShowcase";
+import { ButtonLink } from "./Button";
+import { toSlide } from "@/lib/slide";
 
-export default function Hero() {
+// Type scale taken off the reference: the headline there is ~96px at 1440px
+// wide. Ours had been sitting at 72px inside a dark scrim, which is the main
+// reason it read as small and timid.
+function HeroCopy() {
   return (
-    <section className="relative min-h-[82vh] sm:min-h-[85vh] flex items-end overflow-hidden">
-      <Image
-        src="/hero.webp"
-        alt="Modern residential towers and tree-lined road in Lucknow"
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-blueprint-deep via-blueprint-deep/55 to-blueprint-deep/20" />
-      <div className="absolute inset-0 bg-gradient-to-r from-blueprint-deep/95 via-blueprint-deep/45 to-transparent" />
+    <>
+      <div className="label text-brass flex items-center gap-3 mb-7 animate-fade-up">
+        <span className="w-10 h-px bg-brass" />
+        Lucknow · Real Estate &amp; Property Advisory
+      </div>
 
-      <div className="max-w-5xl mx-auto px-6 relative z-10 pt-28 pb-16 w-full">
-        <div
-          className="font-mono text-[11px] tracking-[0.24em] uppercase text-brass-bright flex items-center gap-2 mb-6 animate-fade-up"
-          style={{ animationDelay: "0.05s" }}
-        >
-          <span className="w-10 h-px bg-brass-bright" />
-          Real Estate &amp; Property Advisory — Lucknow
-        </div>
+      {/* 74px at desktop, Montserrat ExtraBold — the reference's exact
+          hero size. */}
+      <h1
+        className="font-extrabold text-[2.75rem] sm:text-[3.5rem] xl:text-6xl
+                   leading-[1.05] text-ink mb-8 animate-fade-up"
+        style={{ animationDelay: "0.1s" }}
+      >
+        Find Your
+        <br />
+        Dream Home
+      </h1>
 
-        <h1
-          className="font-serif font-semibold text-[36px] sm:text-[56px] leading-[1.1] tracking-tight text-paper max-w-3xl mb-6 animate-fade-up"
-          style={{ animationDelay: "0.15s" }}
-        >
-          Find a home,{" "}
-          <em className="italic text-brass-bright">not just a listing.</em>
-        </h1>
+      <p
+        className="text-lg sm:text-xl text-ink-soft leading-relaxed mb-10 max-w-md animate-fade-up"
+        style={{ animationDelay: "0.2s" }}
+      >
+        Flats, plots, and villas across Lucknow — handled by one person, from
+        the first call to the day you get the keys.
+      </p>
 
-        <p
-          className="text-[16px] sm:text-[19px] text-paper/75 max-w-xl leading-relaxed mb-10 animate-fade-up"
-          style={{ animationDelay: "0.25s" }}
-        >
-          Beig Estates helps you find the right property, negotiate the right
-          price, and close without the runaround — flats, plots, and
-          everything in between.
-        </p>
+      <div
+        className="flex flex-wrap gap-4 animate-fade-up"
+        style={{ animationDelay: "0.3s" }}
+      >
+        <ButtonLink href="/listings" variant="secondary" size="xl" arrow>
+          Browse properties
+        </ButtonLink>
+        <ButtonLink href="/contact" variant="ghost" size="xl">
+          Talk to us
+        </ButtonLink>
+      </div>
+    </>
+  );
+}
 
-        <div
-          className="flex gap-4 flex-wrap animate-fade-up"
-          style={{ animationDelay: "0.35s" }}
-        >
-          <a
-            href="/contact"
-            className="inline-flex items-center gap-2 px-8 py-4 font-mono text-[13px] tracking-wide uppercase rounded bg-brass text-blueprint-deep font-medium hover:bg-brass-bright hover:shadow-[0_0_30px_rgba(226,168,92,0.4)] transition-all"
-          >
-            Share Your Requirement →
-          </a>
-          <a
-            href="/about"
-            className="inline-flex items-center gap-2 px-8 py-4 font-mono text-[13px] tracking-wide uppercase rounded border border-paper/30 text-paper hover:border-brass-bright hover:text-brass-bright transition-colors"
-          >
-            See How It Works
-          </a>
+export default async function Hero() {
+  const properties = await getProperties(4);
+  const slides = properties.map(toSlide).filter((s) => s !== null);
+
+  return (
+    <>
+      {slides.length > 0 ? (
+        <HeroShowcase slides={slides}>
+          <HeroCopy />
+        </HeroShowcase>
+      ) : (
+        // Nothing listed yet. Replace /public/hero.webp with a real photo of
+        // a Lucknow property — the current file is a synthetic render.
+        <section className="bg-paper overflow-hidden">
+          <div className="container-page pt-16 pb-24 lg:pt-24 lg:pb-32">
+            <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] gap-12 lg:gap-16 items-center">
+              <div className="max-w-xl">
+                <HeroCopy />
+              </div>
+              <div className="relative h-[380px] sm:h-[480px] lg:h-[560px] rounded-xl overflow-hidden bg-paper-dim shadow-e3 lg:-mr-16 xl:-mr-24">
+                <Image
+                  src="/hero.webp"
+                  alt="Residential towers along a tree-lined road in Lucknow"
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 55vw"
+                  className="object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Search sits on a tan panel straddling the hero and what follows,
+          the way the reference does it. */}
+      <div className="relative z-20 -mt-14 sm:-mt-16">
+        <div className="container-page">
+          <HeroSearch />
         </div>
       </div>
-    </section>
+    </>
   );
 }

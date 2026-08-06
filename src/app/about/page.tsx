@@ -25,12 +25,12 @@ export default function AboutPage() {
     <>
       <Navbar />
       <main id="main-content">
-        <div className="max-w-5xl mx-auto px-6 pt-14 pb-2">
-          <div className="font-mono text-[11px] tracking-[0.14em] uppercase text-brass mb-3 flex items-center gap-2">
+        <div className="container-page pt-14 pb-2">
+          <div className="label text-brass mb-3 flex items-center gap-2">
             <span className="w-[18px] h-px bg-brass" />
             About
           </div>
-          <h1 className="font-serif font-semibold text-3xl">
+          <h1 className="font-extrabold text-3xl">
             About Beig Estates
           </h1>
         </div>
