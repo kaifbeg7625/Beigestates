@@ -21,17 +21,28 @@ site and a password-protected admin panel to manage properties and leads.
 ### 1. Create a free Supabase project
 1. Go to [supabase.com](https://supabase.com) → Sign up → New Project
 2. Wait ~2 minutes for it to provision
-3. Go to **SQL Editor** → New Query → paste the entire contents of
-   `supabase-schema.sql` (in this repo) → click **Run**
-   This creates the `properties` and `leads` tables with sample data.
-4. Go to **Settings → API** → copy:
+3. Open `supabase-schema.sql` (in this repo) and replace
+   `CHANGE-ME@example.com` with the email you want to log in with.
+   Only emails in that list can use the admin panel.
+4. Go to **SQL Editor** → New Query → paste the entire edited file →
+   click **Run**. This creates the `properties`, `leads`, and `admins`
+   tables with sample data.
+5. Go to **Settings → API** → copy:
    - `Project URL`
    - `anon public` key
 
 ### 2. Create your admin login
 1. In Supabase, go to **Authentication → Users → Add User**
-2. Enter your email and a password — this is what you'll use to log in
-   at `/admin/login`
+2. Enter the **same email** you put in the `admins` table above, plus a
+   password — this is what you'll use to log in at `/admin/login`
+3. Go to **Authentication → Sign In / Providers** and turn **off**
+   "Allow new users to sign up". Nobody should be creating their own
+   account on your project.
+
+> **Already deployed before this change?** Your old policies let any
+> logged-in user manage properties and read leads. Run
+> `supabase-migration-admin-rls.sql` (edit the email in it first) to
+> close that, then do step 2.3 above.
 
 ### 3. Deploy to Vercel
 1. Go to [vercel.com](https://vercel.com) → Sign up with GitHub

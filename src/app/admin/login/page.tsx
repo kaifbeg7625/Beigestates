@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+
+const NOT_ADMIN =
+  "This account doesn't have admin access. Ask the site owner to add your email.";
 
 export default function AdminLogin() {
   const router = useRouter();
@@ -10,6 +13,14 @@ export default function AdminLogin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Middleware sends non-admins back here with ?denied=1. Drop the
+  // session so they aren't left signed in as a dead-end account.
+  useEffect(() => {
+    if (!new URLSearchParams(window.location.search).has("denied")) return;
+    setError(NOT_ADMIN);
+    createClient().auth.signOut();
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -21,6 +32,14 @@ export default function AdminLogin() {
 
     if (error) {
       setError("Invalid email or password.");
+      setLoading(false);
+      return;
+    }
+
+    const { data: isAdmin } = await supabase.rpc("is_admin");
+    if (isAdmin !== true) {
+      await supabase.auth.signOut();
+      setError(NOT_ADMIN);
       setLoading(false);
       return;
     }

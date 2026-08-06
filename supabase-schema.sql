@@ -1,5 +1,41 @@
 -- Run this entire file once in your Supabase project's SQL Editor
 -- (Dashboard → SQL Editor → New Query → paste this → Run)
+--
+-- ⚠️ Before running, scroll to the ADMIN ACCESS section and put your own
+-- email in. Only emails listed there can use the admin panel.
+
+-- ============ ADMIN ACCESS ============
+-- Being logged in is not enough to manage the site — your email has to
+-- be in this table. Keeps a stray signup from becoming an admin.
+create table if not exists admins (
+  email text primary key,
+  created_at timestamptz default now()
+);
+
+-- No policies on purpose: nothing reads this table directly. Only the
+-- security-definer function below touches it, and that runs as the
+-- table owner so RLS doesn't apply to it.
+alter table admins enable row level security;
+
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.admins
+    where email = (auth.jwt() ->> 'email')
+  );
+$$;
+
+grant execute on function public.is_admin() to authenticated;
+
+-- ⚠️ Replace this with the email you'll log in to /admin/login with.
+insert into admins (email) values
+  ('CHANGE-ME@example.com')
+on conflict (email) do nothing;
 
 -- ============ PROPERTIES TABLE ============
 create table if not exists properties (
@@ -25,11 +61,11 @@ create policy "Public can view properties"
   on properties for select
   using (true);
 
--- Only logged-in admin users can insert/update/delete
-create policy "Authenticated users can manage properties"
+-- Only admins can insert/update/delete
+create policy "Admins can manage properties"
   on properties for all
-  using (auth.role() = 'authenticated')
-  with check (auth.role() = 'authenticated');
+  using (public.is_admin())
+  with check (public.is_admin());
 
 -- ============ LEADS TABLE ============
 create table if not exists leads (
@@ -52,18 +88,18 @@ create policy "Anyone can submit a lead"
   on leads for insert
   with check (true);
 
--- Only logged-in admin users can view/update/delete leads
-create policy "Authenticated users can view leads"
+-- Only admins can view/update/delete leads
+create policy "Admins can view leads"
   on leads for select
-  using (auth.role() = 'authenticated');
+  using (public.is_admin());
 
-create policy "Authenticated users can update leads"
+create policy "Admins can update leads"
   on leads for update
-  using (auth.role() = 'authenticated');
+  using (public.is_admin());
 
-create policy "Authenticated users can delete leads"
+create policy "Admins can delete leads"
   on leads for delete
-  using (auth.role() = 'authenticated');
+  using (public.is_admin());
 
 -- ============ SAMPLE DATA (optional — delete rows later from admin panel) ============
 insert into properties (title, location, price, property_type, area, bedrooms, bathrooms, status, image_url)
