@@ -3,18 +3,28 @@ import EnquiryForm from "./EnquiryForm";
 import { SITE, waLink } from "@/lib/site";
 import { IconPhone, IconWhatsApp, IconMail, IconPin } from "./Icons";
 
-// `headless` drops the heading block for /contact, where PageHeader has
-// already introduced the page — otherwise the same sentence appears twice.
-export default function Contact({ headless = false }: { headless?: boolean }) {
+// This section is used on both the homepage (below Hero's own h1, so this
+// heading is an h2) and on /contact (where it's the only heading on the
+// page — headingTag="h1" is passed there). `headless` still exists for the
+// rare case a caller wants neither.
+export default function Contact({
+  headless = false,
+  headingTag = "h2",
+}: {
+  headless?: boolean;
+  headingTag?: "h1" | "h2";
+}) {
+  const Heading = headingTag;
+
   return (
     <section id="contact" className="py-16 sm:py-20 bg-paper">
       <div className="container-page">
         {!headless && (
           <div className="max-w-2xl mb-12">
             <SectionLabel>Get Started</SectionLabel>
-            <h2 className="font-extrabold text-3xl sm:text-4xl leading-tight mb-5">
+            <Heading className="font-extrabold text-3xl sm:text-4xl leading-tight mb-5">
               Tell us what you&apos;re looking for.
-            </h2>
+            </Heading>
             <p className="text-ink-soft leading-relaxed">
               Fill in the form and we&apos;ll come back to you, or skip it and
               call — whichever&apos;s easier.

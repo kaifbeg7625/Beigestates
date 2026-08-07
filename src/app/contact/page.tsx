@@ -1,6 +1,5 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import PageHeader from "@/components/PageHeader";
 import Contact from "@/components/Contact";
 import type { Metadata } from "next";
 
@@ -22,13 +21,10 @@ export default function ContactPage() {
     <>
       <Navbar />
       <main id="main-content">
-        <PageHeader
-          title="Contact Beig Estates"
-          crumbs={[{ label: "Contact" }]}
-        />
-        {/* The section carries its own heading on the homepage; on this page
-            PageHeader already said it, so it renders headless. */}
-        <Contact headless />
+        {/* Contact's own heading is the page's h1 now that PageHeader's
+            breadcrumb block is gone — no longer rendered headless. The
+            homepage's copy of this section stays an h2 (its default). */}
+        <Contact headingTag="h1" />
       </main>
       <Footer />
     </>

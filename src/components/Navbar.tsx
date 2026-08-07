@@ -21,16 +21,10 @@ const links = [
       { href: "/listings?type=Interior", label: "Interiors" },
     ],
   },
-  {
-    href: "/about",
-    label: "About",
-    submenu: [
-      { href: "/about#process", label: "How It Works" },
-      { href: "/about#services", label: "Our Services" },
-      { href: "/about#trust", label: "Trust & Verification" },
-      { href: "/about#faq", label: "FAQ" },
-    ],
-  },
+  // Used to carry a submenu of four in-page anchors. About is a short page
+  // now — a dropdown to scroll to a spot on the page you're already one
+  // click from was solving a problem that no longer exists.
+  { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
 
