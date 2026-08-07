@@ -10,6 +10,7 @@ import PropertyGallery from "@/components/PropertyGallery";
 import EnquireAboutProperty from "@/components/EnquireAboutProperty";
 import BookVisit from "@/components/BookVisit";
 import PropertyCard from "@/components/PropertyCard";
+import { Detail } from "@/components/Field";
 import { SITE } from "@/lib/site";
 import { idFromSlug, propertySlug } from "@/lib/slug";
 import { notFound, redirect } from "next/navigation";
@@ -314,14 +315,5 @@ function Divider() {
     <li aria-hidden="true" className="text-ink-soft/40">
       /
     </li>
-  );
-}
-
-function Detail({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <p className="label text-[0.625rem] text-ink-soft/70 mb-1.5">{label}</p>
-      <p className="font-semibold">{value}</p>
-    </div>
   );
 }

@@ -3,14 +3,19 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { Lead } from "@/lib/types";
+import { Pill, Select, Detail } from "./Field";
+import { Button } from "./Button";
 
 const STATUS_OPTIONS = ["New", "Contacted", "Closed", "Rejected"];
 
+// Palette-native status colours rather than raw bg-blue-100/bg-green-100,
+// which were the one place in the admin still using stock Tailwind colours
+// instead of the site's own tokens.
 const STATUS_COLORS: Record<string, string> = {
   New: "bg-brass/15 text-brass",
-  Contacted: "bg-blue-100 text-blue-700",
-  Closed: "bg-green-100 text-green-700",
-  Rejected: "bg-red-100 text-red-700",
+  Contacted: "bg-ink/10 text-ink",
+  Closed: "bg-[#3F6B4A]/12 text-[#3F6B4A]",
+  Rejected: "bg-danger/12 text-danger",
 };
 
 export default function LeadsManager({ initialLeads }: { initialLeads: Lead[] }) {
@@ -39,40 +44,32 @@ export default function LeadsManager({ initialLeads }: { initialLeads: Lead[] })
     <div>
       <div className="flex gap-2 mb-6 flex-wrap">
         {["All", ...STATUS_OPTIONS].map((s) => (
-          <button
-            key={s}
-            onClick={() => setFilter(s)}
-            className={`px-4 py-2 rounded label border ${
-              filter === s
-                ? "bg-ink text-paper border-ink"
-                : "border-ink/20 text-ink-soft hover:border-brass hover:text-brass"
-            }`}
-          >
+          <Pill key={s} active={filter === s} onClick={() => setFilter(s)}>
             {s}
-          </button>
+          </Pill>
         ))}
       </div>
 
       <div className="space-y-3">
         {filtered.map((lead) => (
-          <div key={lead.id} className="surface rounded-lg p-5">
-            <div className="flex items-start justify-between gap-4 mb-3">
+          <div key={lead.id} className="surface rounded-xl p-6">
+            <div className="flex items-start justify-between gap-4 mb-4">
               <div>
-                <p className="font-semibold">{lead.name}</p>
-                <a href={`tel:${lead.mobile}`} className="text-sm text-brass font-mono">
+                <p className="font-bold text-lg">{lead.name}</p>
+                <a href={`tel:${lead.mobile}`} className="text-sm text-brass">
                   {lead.mobile}
                 </a>
               </div>
               <span
-                className={`px-3 py-1 rounded-full text-xs font-mono uppercase shrink-0 ${
-                  STATUS_COLORS[lead.status] ?? "bg-gray-100 text-gray-600"
+                className={`px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide shrink-0 ${
+                  STATUS_COLORS[lead.status] ?? "bg-ink/10 text-ink-soft"
                 }`}
               >
                 {lead.status}
               </span>
             </div>
 
-            <div className="grid sm:grid-cols-4 gap-3 text-sm mb-4">
+            <div className="grid sm:grid-cols-4 gap-4 mb-4">
               <Detail label="Service" value={lead.service} />
               <Detail label="City" value={lead.city} />
               <Detail label="Budget" value={lead.budget} />
@@ -80,37 +77,38 @@ export default function LeadsManager({ initialLeads }: { initialLeads: Lead[] })
             </div>
 
             {lead.notes && (
-              <p className="text-sm text-ink-soft mb-4 bg-paper rounded p-3">{lead.notes}</p>
+              <p className="text-sm text-ink-soft mb-4 surface-tan rounded-lg p-4">
+                {lead.notes}
+              </p>
             )}
 
             <div className="flex items-center gap-3 flex-wrap">
-              <select
+              <Select
                 value={lead.status}
                 onChange={(e) => updateStatus(lead.id, e.target.value)}
-                className="border border-ink/20 rounded px-3 py-1.5 text-sm font-mono"
-              >
-                {STATUS_OPTIONS.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-              <a
-                href={`https://wa.me/91${lead.mobile}`}
-                target="_blank"
-                className="label text-brass"
+                options={STATUS_OPTIONS}
+                aria-label="Lead status"
+                className="w-auto"
+              />
+              <Button
+                variant="ghost"
+                size="md"
+                className="!px-4 !py-2"
+                onClick={() =>
+                  window.open(`https://wa.me/91${lead.mobile}`, "_blank")
+                }
               >
                 WhatsApp
-              </a>
+              </Button>
               <button
                 onClick={() => handleDelete(lead.id)}
-                className="label text-danger ml-auto"
+                className="text-sm font-bold text-danger ml-auto hover:underline"
               >
                 Delete
               </button>
             </div>
 
-            <p className="text-xs text-ink-soft/60 mt-3 font-mono">
+            <p className="text-xs text-ink-soft/60 mt-4">
               {new Date(lead.created_at).toLocaleString("en-IN")}
             </p>
           </div>
@@ -120,15 +118,6 @@ export default function LeadsManager({ initialLeads }: { initialLeads: Lead[] })
           <p className="text-sm text-ink-soft">No leads in this category yet.</p>
         )}
       </div>
-    </div>
-  );
-}
-
-function Detail({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <p className="label text-ink-soft/70">{label}</p>
-      <p className="font-medium">{value}</p>
     </div>
   );
 }

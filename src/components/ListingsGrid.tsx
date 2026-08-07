@@ -5,6 +5,7 @@ import type { Property } from "@/lib/types";
 import PropertyCard from "./PropertyCard";
 import Reveal from "./Reveal";
 import { Button } from "./Button";
+import { Field, TextInput, Select, Pill } from "./Field";
 import { SALE_BUDGETS, RENT_BUDGETS, budgetMatches, parsePrice } from "@/lib/price";
 
 const TYPE_TABS = ["All", "Flat", "Villa", "Plot", "Rent", "Interior"];
@@ -86,65 +87,63 @@ export default function ListingsGrid({
       <div className="mb-12 space-y-5">
         <div className="flex gap-2.5 flex-wrap">
           {TYPE_TABS.map((t) => (
-            <button
-              key={t}
-              onClick={() => selectType(t)}
-              className={`px-6 py-3 rounded-full font-bold border-[1.5px] transition-all duration-300 ${
-                activeType === t
-                  ? "bg-ink text-paper border-ink"
-                  : "bg-shell border-ink/15 text-ink-soft hover:border-ink hover:text-ink"
-              }`}
-            >
+            <Pill key={t} active={activeType === t} onClick={() => selectType(t)}>
               {t}
-            </button>
+            </Pill>
           ))}
         </div>
 
-        {/* Same tan panel and white pill fields as the homepage search, so
-            the two don't look like they came off different sites. */}
-        <div className="surface-tan rounded-xl p-3 sm:p-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,1.1fr)_minmax(0,1.1fr)]">
-          <FilterField label="Search">
-            <input
+        {/* Same tan panel and the same fields as the homepage search — one
+            control set, so the two can't drift apart. */}
+        <div className="surface-tan rounded-xl p-4 sm:p-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,1.1fr)_minmax(0,1.1fr)]">
+          <Field label="Search" htmlFor="lg-search">
+            <TextInput
+              id="lg-search"
               type="text"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               placeholder="Title or location…"
-              className="w-full bg-transparent outline-none placeholder:text-ink-soft/50"
             />
-          </FilterField>
+          </Field>
 
-          <FilterField label="Bedrooms">
-            <FilterSelect
+          <Field label="Bedrooms" htmlFor="lg-beds">
+            <Select
+              id="lg-beds"
               value={bedrooms}
-              onChange={setBedrooms}
-              ariaLabel="Bedrooms"
+              onChange={(e) => setBedrooms(e.target.value)}
+              aria-label="Bedrooms"
               options={["Any", "1", "2", "3", "4", "5"].map((b) => ({
                 value: b,
                 label: b === "Any" ? "Any" : `${b} BHK`,
               }))}
             />
-          </FilterField>
+          </Field>
 
-          <FilterField label={activeType === "Rent" ? "Monthly rent" : "Budget"}>
-            <FilterSelect
+          <Field
+            label={activeType === "Rent" ? "Monthly rent" : "Budget"}
+            htmlFor="lg-budget"
+          >
+            <Select
+              id="lg-budget"
               value={String(budgetIdx)}
-              onChange={(v) => setBudgetIdx(Number(v))}
-              ariaLabel="Budget"
+              onChange={(e) => setBudgetIdx(Number(e.target.value))}
+              aria-label="Budget"
               options={budgets.map((b, i) => ({
                 value: String(i),
                 label: b.label,
               }))}
             />
-          </FilterField>
+          </Field>
 
-          <FilterField label="Sort by">
-            <FilterSelect
+          <Field label="Sort by" htmlFor="lg-sort">
+            <Select
+              id="lg-sort"
               value={sort}
-              onChange={(v) => setSort(v as Sort)}
-              ariaLabel="Sort by"
+              onChange={(e) => setSort(e.target.value as Sort)}
+              aria-label="Sort by"
               options={SORTS.map((s) => ({ value: s, label: s }))}
             />
-          </FilterField>
+          </Field>
         </div>
 
         <div className="flex items-center justify-between gap-4 flex-wrap pt-1">
@@ -186,63 +185,3 @@ export default function ListingsGrid({
   );
 }
 
-// Shares its look with the homepage hero search — white pill on the tan
-// panel, small mono label above the value.
-function FilterField({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <label className="min-w-0 flex flex-col justify-center gap-1 bg-shell rounded-lg px-6 py-4 cursor-text transition-shadow duration-200 focus-within:shadow-e2">
-      <span className="label text-[0.625rem] text-ink-soft/70 truncate">
-        {label}
-      </span>
-      {children}
-    </label>
-  );
-}
-
-function FilterSelect({
-  value,
-  onChange,
-  options,
-  ariaLabel,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  options: { value: string; label: string }[];
-  ariaLabel: string;
-}) {
-  return (
-    <div className="relative min-w-0">
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        aria-label={ariaLabel}
-        className="w-full appearance-none bg-transparent pr-6 font-medium outline-none cursor-pointer truncate"
-      >
-        {options.map((o) => (
-          <option key={o.value} value={o.value}>
-            {o.label}
-          </option>
-        ))}
-      </select>
-      <svg
-        width="11"
-        height="11"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        aria-hidden="true"
-        className="absolute right-0 top-1/2 -translate-y-1/2 text-ink-soft pointer-events-none"
-      >
-        <path d="M6 9l6 6 6-6" />
-      </svg>
-    </div>
-  );
-}

@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import Link from "next/link";
 
 // One button system for the whole site.
@@ -97,6 +98,49 @@ export function ButtonLink({
     </Link>
   );
 }
+
+/**
+ * Circular icon-only control — carousel arrows, gallery next/prev, the
+ * floating call and WhatsApp buttons. These were hand-rolled at four
+ * different sizes with four different hover treatments.
+ * `label` is required because there's no visible text to read.
+ */
+export const IconButton = forwardRef<
+  HTMLButtonElement,
+  {
+    label: string;
+    tone?: "outline" | "solid" | "onDark";
+    size?: "sm" | "md";
+    children: React.ReactNode;
+  } & React.ButtonHTMLAttributes<HTMLButtonElement>
+>(function IconButton(
+  { label, tone = "outline", size = "md", className = "", children, ...rest },
+  ref
+) {
+  const tones = {
+    outline:
+      "border-[1.5px] border-ink/25 text-ink hover:bg-ink hover:text-paper hover:border-ink",
+    solid: "bg-ink text-paper hover:bg-[#1C1009]",
+    onDark: "bg-paper/12 text-paper backdrop-blur-sm hover:bg-paper/25",
+  };
+  const sizes = { sm: "w-10 h-10", md: "w-12 h-12" };
+
+  return (
+    <button
+      ref={ref}
+      type="button"
+      aria-label={label}
+      {...rest}
+      className={`inline-flex items-center justify-center rounded-full shrink-0
+        transition-all duration-300 focus-visible:outline-none
+        focus-visible:ring-2 focus-visible:ring-brass
+        disabled:opacity-30 disabled:pointer-events-none
+        ${tones[tone]} ${sizes[size]} ${className}`}
+    >
+      {children}
+    </button>
+  );
+});
 
 export function Button({
   variant = "primary",

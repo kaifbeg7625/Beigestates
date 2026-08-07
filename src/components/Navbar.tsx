@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { SITE, waLink } from "@/lib/site";
 import { IconPhone, IconPin, IconMail, IconWhatsApp } from "./Icons";
+import { IconButton } from "./Button";
 
 const links = [
   { href: "/", label: "Home" },
@@ -207,35 +208,38 @@ export default function Navbar() {
 
             {/* Mobile trigger */}
             <div className="flex md:hidden items-center gap-2">
-            <a
-              href={`tel:${SITE.phones[0].tel}`}
-              aria-label={`Call ${SITE.phones[0].display}`}
-              className="w-11 h-11 flex items-center justify-center rounded-lg bg-ink text-paper active:scale-95 transition-transform"
-            >
-              <IconPhone className="w-5 h-5" />
-            </a>
-            <button
-              onClick={() => setOpen((v) => !v)}
-              aria-label="Toggle menu"
-              aria-expanded={open}
-              className="w-11 h-11 flex flex-col items-center justify-center gap-[5px] text-ink"
-            >
-              <span
-                className={`block w-6 h-0.5 bg-current transition-transform duration-300 ${
-                  open ? "translate-y-[7px] rotate-45" : ""
-                }`}
-              />
-              <span
-                className={`block w-6 h-0.5 bg-current transition-opacity duration-200 ${
-                  open ? "opacity-0" : ""
-                }`}
-              />
-              <span
-                className={`block w-6 h-0.5 bg-current transition-transform duration-300 ${
-                  open ? "-translate-y-[7px] -rotate-45" : ""
-                }`}
-              />
-            </button>
+              {/* IconButton is button-only; this stays a plain anchor with
+                  the same tone-solid treatment. */}
+              <a
+                href={`tel:${SITE.phones[0].tel}`}
+                aria-label={`Call ${SITE.phones[0].display}`}
+                className="w-11 h-11 rounded-lg bg-ink text-paper flex items-center justify-center active:scale-95 transition-transform"
+              >
+                <IconPhone className="w-5 h-5" />
+              </a>
+              <IconButton
+                onClick={() => setOpen((v) => !v)}
+                label="Toggle menu"
+                aria-expanded={open}
+                tone="outline"
+                className="!border-0 flex-col gap-[5px] !rounded-lg"
+              >
+                <span
+                  className={`block w-6 h-0.5 bg-current transition-transform duration-300 ${
+                    open ? "translate-y-[7px] rotate-45" : ""
+                  }`}
+                />
+                <span
+                  className={`block w-6 h-0.5 bg-current transition-opacity duration-200 ${
+                    open ? "opacity-0" : ""
+                  }`}
+                />
+                <span
+                  className={`block w-6 h-0.5 bg-current transition-transform duration-300 ${
+                    open ? "-translate-y-[7px] -rotate-45" : ""
+                  }`}
+                />
+              </IconButton>
             </div>
           </div>
         </div>

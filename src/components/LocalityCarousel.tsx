@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { IconButton } from "./Button";
 
 export type Locality = {
   name: string;
@@ -92,45 +93,39 @@ export default function LocalityCarousel({ areas }: { areas: Locality[] }) {
           every tile is a real link, so they're a convenience, not the only
           way through. */}
       <div className="flex items-center gap-3 mt-6">
-        <Arrow dir="left" onClick={() => scrollBy(-1)} disabled={atStart} />
-        <Arrow dir="right" onClick={() => scrollBy(1)} disabled={atEnd} />
+        <IconButton
+          label="Scroll left"
+          onClick={() => scrollBy(-1)}
+          disabled={atStart}
+        >
+          <ChevronIcon dir="left" />
+        </IconButton>
+        <IconButton
+          label="Scroll right"
+          onClick={() => scrollBy(1)}
+          disabled={atEnd}
+        >
+          <ChevronIcon dir="right" />
+        </IconButton>
       </div>
     </div>
   );
 }
 
-function Arrow({
-  dir,
-  onClick,
-  disabled,
-}: {
-  dir: "left" | "right";
-  onClick: () => void;
-  disabled: boolean;
-}) {
+function ChevronIcon({ dir }: { dir: "left" | "right" }) {
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      aria-label={dir === "left" ? "Scroll left" : "Scroll right"}
-      className="w-12 h-12 rounded-full border-[1.5px] border-ink/25 text-ink
-                 flex items-center justify-center transition-all duration-300
-                 hover:bg-ink hover:text-paper hover:border-ink
-                 disabled:opacity-30 disabled:pointer-events-none"
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
     >
-      <svg
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <path d={dir === "left" ? "M15 18l-6-6 6-6" : "M9 18l6-6-6-6"} />
-      </svg>
-    </button>
+      <path d={dir === "left" ? "M15 18l-6-6 6-6" : "M9 18l6-6-6-6"} />
+    </svg>
   );
 }

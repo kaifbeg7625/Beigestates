@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
+import { IconButton } from "./Button";
 
 type MediaItem = { type: "image" | "video"; url: string };
 
@@ -84,7 +85,7 @@ export default function PropertyGallery({
 
   if (media.length === 0) {
     return (
-      <div className="w-full h-[340px] rounded bg-[#e8e2d4] flex items-center justify-center text-ink-soft text-sm">
+      <div className="w-full h-[340px] rounded-xl bg-paper-dim flex items-center justify-center text-ink-soft">
         No photos available yet
       </div>
     );
@@ -96,7 +97,7 @@ export default function PropertyGallery({
     <div>
       <button
         onClick={() => setLightboxOpen(true)}
-        className="w-full h-[340px] sm:h-[440px] relative rounded overflow-hidden bg-[#e8e2d4] block group"
+        className="w-full h-[340px] sm:h-[440px] relative rounded-xl overflow-hidden bg-paper-dim block group"
         aria-label="Open full-screen gallery"
       >
         {activeItem.type === "image" ? (
@@ -120,7 +121,7 @@ export default function PropertyGallery({
             </div>
           </div>
         )}
-        <div className="absolute bottom-3 right-3 bg-ink/70 text-paper text-xs font-mono px-2.5 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute bottom-3 right-3 bg-ink/75 text-paper text-sm font-medium px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
           {media.length} {media.length === 1 ? "item" : "items"} — Click to view
         </div>
       </button>
@@ -131,7 +132,7 @@ export default function PropertyGallery({
             <button
               key={item.url + i}
               onClick={() => setActive(i)}
-              className={`relative w-20 h-16 shrink-0 rounded overflow-hidden border-2 transition-colors ${
+              className={`relative w-20 h-16 shrink-0 rounded-lg overflow-hidden border-2 transition-colors ${
                 i === active ? "border-brass" : "border-transparent opacity-70 hover:opacity-100"
               }`}
               aria-label={`View ${item.type} ${i + 1} of ${title}`}
@@ -161,25 +162,27 @@ export default function PropertyGallery({
           aria-modal="true"
           onClick={() => setLightboxOpen(false)}
         >
-          <button
+          <IconButton
+            label="Close gallery"
+            tone="onDark"
             onClick={() => setLightboxOpen(false)}
-            aria-label="Close gallery"
-            className="absolute top-5 right-5 w-10 h-10 flex items-center justify-center text-paper hover:text-brass-bright z-10"
+            className="absolute top-5 right-5 z-10"
           >
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M6 6l12 12M6 18L18 6" />
             </svg>
-          </button>
+          </IconButton>
 
-          <button
+          <IconButton
+            label="Previous"
+            tone="onDark"
             onClick={(e) => { e.stopPropagation(); goPrev(); }}
-            aria-label="Previous"
-            className="absolute left-3 sm:left-6 w-11 h-11 rounded-full bg-paper/10 hover:bg-paper/20 flex items-center justify-center text-paper z-10"
+            className="absolute left-3 sm:left-6 z-10"
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M15 18l-6-6 6-6" />
             </svg>
-          </button>
+          </IconButton>
 
           <div
             className="w-full max-w-4xl max-h-[80vh] px-14 sm:px-20"
@@ -198,20 +201,21 @@ export default function PropertyGallery({
             ) : (
               <VideoPlayer url={activeItem.url} className="w-full aspect-video rounded" />
             )}
-            <p className="text-center text-paper/60 font-mono text-xs mt-4">
+            <p className="text-center text-paper/60 text-sm mt-4">
               {active + 1} / {media.length}
             </p>
           </div>
 
-          <button
+          <IconButton
+            label="Next"
+            tone="onDark"
             onClick={(e) => { e.stopPropagation(); goNext(); }}
-            aria-label="Next"
-            className="absolute right-3 sm:right-6 w-11 h-11 rounded-full bg-paper/10 hover:bg-paper/20 flex items-center justify-center text-paper z-10"
+            className="absolute right-3 sm:right-6 z-10"
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M9 18l6-6-6-6" />
             </svg>
-          </button>
+          </IconButton>
         </div>
       )}
     </div>

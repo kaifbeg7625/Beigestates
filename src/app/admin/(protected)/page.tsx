@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import Link from "next/link";
+import { ButtonLink } from "@/components/Button";
 
 export default async function AdminDashboard() {
   const supabase = await createClient();
@@ -22,24 +22,18 @@ export default async function AdminDashboard() {
       <h1 className="font-extrabold text-2xl mb-8">Dashboard</h1>
 
       <div className="grid sm:grid-cols-3 gap-5 mb-10">
-        <StatCard label="Total Properties" value={propertyCount ?? 0} />
-        <StatCard label="Total Leads" value={leadCount ?? 0} />
-        <StatCard label="New (Unactioned) Leads" value={newLeadCount ?? 0} highlight />
+        <StatCard label="Total properties" value={propertyCount ?? 0} />
+        <StatCard label="Total leads" value={leadCount ?? 0} />
+        <StatCard label="New leads" value={newLeadCount ?? 0} highlight />
       </div>
 
-      <div className="flex gap-4">
-        <Link
-          href="/admin/properties"
-          className="px-6 py-3 rounded bg-ink text-paper font-bold hover:bg-blueprint-deep transition-colors"
-        >
-          Manage Properties
-        </Link>
-        <Link
-          href="/admin/leads"
-          className="px-6 py-3 rounded border border-ink/25 font-bold hover:border-brass hover:text-brass transition-colors"
-        >
-          View Leads
-        </Link>
+      <div className="flex gap-3">
+        <ButtonLink href="/admin/properties" variant="secondary">
+          Manage properties
+        </ButtonLink>
+        <ButtonLink href="/admin/leads" variant="ghost">
+          View leads
+        </ButtonLink>
       </div>
     </div>
   );
@@ -55,15 +49,9 @@ function StatCard({
   highlight?: boolean;
 }) {
   return (
-    <div
-      className={`rounded p-6 border ${
-        highlight ? "border-brass bg-brass/5" : "border-ink/10 bg-shell"
-      }`}
-    >
-      <div className="font-extrabold text-3xl font-semibold text-brass mb-1">{value}</div>
-      <div className="label text-ink-soft">
-        {label}
-      </div>
+    <div className={highlight ? "surface-tan rounded-xl p-6" : "surface rounded-xl p-6"}>
+      <div className="font-extrabold text-3xl text-brass mb-1.5">{value}</div>
+      <div className="label text-ink-soft">{label}</div>
     </div>
   );
 }

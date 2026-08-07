@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { Property } from "@/lib/types";
+import { Field, TextInput, Select, Textarea } from "./Field";
+import { Button } from "./Button";
 
 const emptyForm = {
   title: "",
@@ -17,6 +19,9 @@ const emptyForm = {
   videosText: "",
   description: "",
 };
+
+const TYPES = ["Flat", "Villa", "Plot", "Rent", "Interior"];
+const STATUSES = ["Ready to Move", "Under Construction"];
 
 export default function PropertiesManager({
   initialProperties,
@@ -177,65 +182,88 @@ export default function PropertiesManager({
 
   return (
     <div className="space-y-10">
-      <form
-        onSubmit={handleSubmit}
-        className="surface rounded-lg p-6 space-y-4"
-      >
-        <h2 className="label text-ink-soft">
-          {editingId ? "Edit Property" : "Add New Property"}
+      <form onSubmit={handleSubmit} className="surface rounded-xl p-7 space-y-5">
+        <h2 className="font-bold text-lg">
+          {editingId ? "Edit property" : "Add new property"}
         </h2>
 
         <div className="grid sm:grid-cols-2 gap-4">
-          <LabeledInput label="Title" value={form.title} onChange={(v) => update("title", v)} required />
-          <LabeledInput label="Location" value={form.location} onChange={(v) => update("location", v)} required />
+          <Field label="Title" htmlFor="p-title">
+            <TextInput
+              id="p-title"
+              value={form.title}
+              onChange={(e) => update("title", e.target.value)}
+              required
+            />
+          </Field>
+          <Field label="Location" htmlFor="p-location">
+            <TextInput
+              id="p-location"
+              value={form.location}
+              onChange={(e) => update("location", e.target.value)}
+              required
+            />
+          </Field>
         </div>
 
         <div className="grid sm:grid-cols-3 gap-4">
-          <LabeledInput label="Price (e.g. ₹42,00,000)" value={form.price} onChange={(v) => update("price", v)} required />
-          <div>
-            <label className="block label text-ink-soft mb-1.5">
-              Type
-            </label>
-            <select
+          <Field label="Price" htmlFor="p-price" hint="e.g. ₹42,00,000 or ₹18,000 / month">
+            <TextInput
+              id="p-price"
+              value={form.price}
+              onChange={(e) => update("price", e.target.value)}
+              required
+              placeholder="₹42,00,000"
+            />
+          </Field>
+          <Field label="Type" htmlFor="p-type">
+            <Select
+              id="p-type"
               value={form.property_type}
               onChange={(e) => update("property_type", e.target.value)}
-              className="w-full border-0 border-b-[1.5px] border-ink/25 bg-transparent py-2 outline-none focus:border-brass"
-            >
-              <option>Flat</option>
-              <option>Villa</option>
-              <option>Plot</option>
-              <option>Rent</option>
-              <option>Interior</option>
-            </select>
-          </div>
-          <div>
-            <label className="block label text-ink-soft mb-1.5">
-              Status
-            </label>
-            <select
+              options={TYPES}
+            />
+          </Field>
+          <Field label="Status" htmlFor="p-status">
+            <Select
+              id="p-status"
               value={form.status}
               onChange={(e) => update("status", e.target.value)}
-              className="w-full border-0 border-b-[1.5px] border-ink/25 bg-transparent py-2 outline-none focus:border-brass"
-            >
-              <option>Ready to Move</option>
-              <option>Under Construction</option>
-            </select>
-          </div>
+              options={STATUSES}
+            />
+          </Field>
         </div>
 
         <div className="grid sm:grid-cols-3 gap-4">
-          <LabeledInput label="Area (e.g. 1050 sq.ft)" value={form.area} onChange={(v) => update("area", v)} />
-          <LabeledInput label="Bedrooms" value={form.bedrooms} onChange={(v) => update("bedrooms", v)} />
-          <LabeledInput label="Bathrooms" value={form.bathrooms} onChange={(v) => update("bathrooms", v)} />
+          <Field label="Area" htmlFor="p-area">
+            <TextInput
+              id="p-area"
+              value={form.area}
+              onChange={(e) => update("area", e.target.value)}
+              placeholder="1050 sq.ft"
+            />
+          </Field>
+          <Field label="Bedrooms" htmlFor="p-bed">
+            <TextInput
+              id="p-bed"
+              value={form.bedrooms}
+              onChange={(e) => update("bedrooms", e.target.value)}
+            />
+          </Field>
+          <Field label="Bathrooms" htmlFor="p-bath">
+            <TextInput
+              id="p-bath"
+              value={form.bathrooms}
+              onChange={(e) => update("bathrooms", e.target.value)}
+            />
+          </Field>
         </div>
 
-        <div>
-          <label className="block label text-ink-soft mb-1.5">
-            Upload Photos Directly
-          </label>
-          <label className="inline-flex items-center gap-2 px-4 py-2.5 rounded border border-ink/25 cursor-pointer hover:border-brass hover:text-brass transition-colors text-sm font-mono uppercase tracking-wide">
-            {uploading ? "Uploading..." : "Choose Photos →"}
+        <Field label="Upload photos directly" htmlFor="p-upload">
+          <label className="inline-flex items-center gap-2.5 px-5 py-3 rounded-lg border-[1.5px] border-ink/20 cursor-pointer hover:border-ink hover:bg-ink/5 transition-colors font-bold text-sm">
+            {uploading ? "Uploading…" : "Choose photos"}
             <input
+              id="p-upload"
               type="file"
               accept="image/*"
               multiple
@@ -244,111 +272,98 @@ export default function PropertiesManager({
               className="hidden"
             />
           </label>
-          {uploadError && (
-            <p className="text-xs text-danger mt-2">{uploadError}</p>
-          )}
-        </div>
+          {uploadError && <p className="text-sm text-danger mt-2">{uploadError}</p>}
+        </Field>
 
-        <div>
-          <label className="block label text-ink-soft mb-1.5">
-            Photo URLs — one per line (uploaded photos appear here automatically; first one becomes the cover photo)
-          </label>
-          <textarea
+        <Field
+          label="Photo URLs — one per line"
+          htmlFor="p-images"
+          hint="Uploaded photos appear here automatically; the first line becomes the cover photo."
+        >
+          <Textarea
+            id="p-images"
             value={form.imagesText}
             onChange={(e) => update("imagesText", e.target.value)}
-            placeholder={"https://...jpg\nhttps://...jpg\nhttps://...jpg"}
-            className="w-full border-0 border-b-[1.5px] border-ink/25 bg-transparent py-2 outline-none focus:border-brass min-h-[90px] font-mono text-sm"
+            placeholder={"https://...jpg\nhttps://...jpg"}
+            rows={4}
           />
-        </div>
+        </Field>
 
-        <div>
-          <label className="block label text-ink-soft mb-1.5">
-            Video URLs — one per line (YouTube links or direct .mp4 links)
-          </label>
-          <textarea
+        <Field
+          label="Video URLs — one per line (optional)"
+          htmlFor="p-videos"
+          hint="YouTube links or direct .mp4 links."
+        >
+          <Textarea
+            id="p-videos"
             value={form.videosText}
             onChange={(e) => update("videosText", e.target.value)}
-            placeholder={"https://youtube.com/watch?v=...\nhttps://...mp4"}
-            className="w-full border-0 border-b-[1.5px] border-ink/25 bg-transparent py-2 outline-none focus:border-brass min-h-[60px] font-mono text-sm"
+            placeholder={"https://youtube.com/watch?v=..."}
+            rows={2}
           />
-        </div>
+        </Field>
 
-        <div>
-          <label className="block label text-ink-soft mb-1.5">
-            Description (optional)
-          </label>
-          <textarea
+        <Field label="Description (optional)" htmlFor="p-desc">
+          <Textarea
+            id="p-desc"
             value={form.description}
             onChange={(e) => update("description", e.target.value)}
-            className="w-full border-0 border-b-[1.5px] border-ink/25 bg-transparent py-2 outline-none focus:border-brass min-h-[70px]"
+            rows={3}
           />
-        </div>
+        </Field>
 
         {saveError && (
-          <p className="text-sm text-danger bg-danger/5 border border-danger/20 rounded p-3">
+          <p className="text-sm text-danger bg-danger/5 border-[1.5px] border-danger/20 rounded-lg p-4">
             Failed to save: {saveError}
           </p>
         )}
 
-        <div className="flex gap-3 pt-2">
-          <button
-            type="submit"
-            disabled={saving}
-            className="px-6 py-3 rounded bg-ink text-paper font-bold hover:bg-blueprint-deep transition-colors disabled:opacity-60"
-          >
-            {saving ? "Saving..." : editingId ? "Update Property" : "Add Property"}
-          </button>
+        <div className="flex gap-3 pt-1">
+          <Button type="submit" variant="secondary" disabled={saving}>
+            {saving ? "Saving…" : editingId ? "Update property" : "Add property"}
+          </Button>
           {editingId && (
-            <button
-              type="button"
-              onClick={cancelEdit}
-              className="px-6 py-3 rounded border border-ink/25 font-bold"
-            >
+            <Button type="button" variant="ghost" onClick={cancelEdit}>
               Cancel
-            </button>
+            </Button>
           )}
         </div>
       </form>
 
       <div>
-        <h2 className="label text-ink-soft mb-4">
-          All Listings ({properties.length})
+        <h2 className="font-bold text-lg mb-4">
+          All listings ({properties.length})
         </h2>
         <div className="space-y-3">
           {properties.map((p) => {
             const thumb = p.images && p.images.length > 0 ? p.images[0] : p.image_url;
             return (
-            <div
-              key={p.id}
-              className="surface rounded-lg p-4 flex items-center gap-4"
-            >
-              <div
-                className="w-20 h-16 rounded bg-cover bg-center bg-[#e8e2d4] shrink-0"
-                style={{
-                  backgroundImage: thumb ? `url('${thumb}')` : undefined,
-                }}
-              />
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-sm truncate">
-                  {p.title} — {p.location}
-                </p>
-                <p className="text-xs text-ink-soft">
-                  {p.price} · {p.property_type} · {p.status}
-                </p>
+              <div key={p.id} className="surface rounded-xl p-5 flex items-center gap-4">
+                <div
+                  className="w-20 h-16 rounded-lg bg-cover bg-center bg-paper-dim shrink-0"
+                  style={{ backgroundImage: thumb ? `url('${thumb}')` : undefined }}
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold truncate">
+                    {p.title} — {p.location}
+                  </p>
+                  <p className="text-sm text-ink-soft">
+                    {p.price} · {p.property_type} · {p.status}
+                  </p>
+                </div>
+                <button
+                  onClick={() => startEdit(p)}
+                  className="text-sm font-bold text-brass shrink-0 hover:underline"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(p.id)}
+                  className="text-sm font-bold text-danger shrink-0 hover:underline"
+                >
+                  Delete
+                </button>
               </div>
-              <button
-                onClick={() => startEdit(p)}
-                className="label text-brass shrink-0"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDelete(p.id)}
-                className="label text-danger shrink-0"
-              >
-                Delete
-              </button>
-            </div>
             );
           })}
           {properties.length === 0 && (
@@ -356,32 +371,6 @@ export default function PropertiesManager({
           )}
         </div>
       </div>
-    </div>
-  );
-}
-
-function LabeledInput({
-  label,
-  value,
-  onChange,
-  required,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  required?: boolean;
-}) {
-  return (
-    <div>
-      <label className="block label text-ink-soft mb-1.5">
-        {label}
-      </label>
-      <input
-        required={required}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full border-0 border-b-[1.5px] border-ink/25 bg-transparent py-2 outline-none focus:border-brass"
-      />
     </div>
   );
 }

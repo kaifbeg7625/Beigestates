@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { Field, TextInput } from "@/components/Field";
+import { Button } from "@/components/Button";
 
 const NOT_ADMIN =
   "This account doesn't have admin access. Ask the site owner to add your email.";
@@ -49,8 +51,11 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-blueprint blueprint-grid flex items-center justify-center px-6">
-      <div className="w-full max-w-sm bg-paper rounded p-8">
+    // Same blush page as the rest of the site — this used to be the old
+    // navy-and-blueprint-grid background, the last dark surface left over
+    // from before the redesign.
+    <div className="min-h-screen bg-paper flex items-center justify-center px-6">
+      <div className="w-full max-w-sm surface-raised rounded-xl p-8">
         <div className="label text-brass mb-3 flex items-center gap-2">
           <span className="w-[18px] h-px bg-brass" />
           Admin
@@ -58,40 +63,36 @@ export default function AdminLogin() {
         <h1 className="font-extrabold text-2xl mb-6">Beig Estates</h1>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block label text-ink-soft mb-2">
-              Email
-            </label>
-            <input
+          <Field label="Email" htmlFor="admin-email">
+            <TextInput
+              id="admin-email"
               required
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border-0 border-b-[1.5px] border-ink/25 bg-transparent py-2 text-base outline-none focus:border-brass"
             />
-          </div>
-          <div>
-            <label className="block label text-ink-soft mb-2">
-              Password
-            </label>
-            <input
+          </Field>
+
+          <Field label="Password" htmlFor="admin-password">
+            <TextInput
+              id="admin-password"
               required
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border-0 border-b-[1.5px] border-ink/25 bg-transparent py-2 text-base outline-none focus:border-brass"
             />
-          </div>
+          </Field>
 
           {error && <p className="text-sm text-danger">{error}</p>}
 
-          <button
+          <Button
             type="submit"
+            variant="secondary"
             disabled={loading}
-            className="w-full py-3.5 rounded bg-ink text-paper font-bold hover:bg-blueprint-deep transition-colors disabled:opacity-60"
+            className="w-full"
           >
-            {loading ? "Signing in..." : "Sign In"}
-          </button>
+            {loading ? "Signing in…" : "Sign in"}
+          </Button>
         </form>
       </div>
     </div>

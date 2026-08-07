@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { IconPin } from "./Icons";
 import { Button } from "./Button";
+import { Field, TextInput, Select } from "./Field";
 
 const SLOTS = [
   "Morning (10am – 1pm)",
@@ -101,7 +102,7 @@ export default function BookVisit({
   }
 
   return (
-    <div className="surface-raised rounded-lg p-7">
+    <div className="surface rounded-xl p-7">
       <div className="flex items-center gap-2.5 mb-1.5">
         <IconPin className="w-[18px] h-[18px] text-brass" />
         <p className="label text-brass">Book a site visit</p>
@@ -111,50 +112,57 @@ export default function BookVisit({
       </h3>
 
       <form onSubmit={submit} className="space-y-4">
-        <Input label="Your name" value={name} onChange={setName} required />
-        <Input
-          label="Mobile number"
-          value={mobile}
-          onChange={setMobile}
-          required
-          type="tel"
-          inputMode="numeric"
-          placeholder="10-digit number"
-        />
+        <Field label="Your name" htmlFor="bv-name">
+          <TextInput
+            id="bv-name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+        </Field>
+
+        <Field label="Mobile number" htmlFor="bv-mobile">
+          <TextInput
+            id="bv-mobile"
+            value={mobile}
+            onChange={(e) => setMobile(e.target.value)}
+            required
+            type="tel"
+            inputMode="numeric"
+            placeholder="10-digit number"
+          />
+        </Field>
 
         <div className="grid grid-cols-2 gap-4">
-          <Input
-            label="Preferred date"
-            value={date}
-            onChange={setDate}
-            required
-            type="date"
-            min={minDate}
-            max={maxDate}
-          />
-          <div>
-            <label className="label text-[0.625rem] text-ink-soft block mb-2">
-              Time
-            </label>
-            <select
+          <Field label="Preferred date" htmlFor="bv-date">
+            <TextInput
+              id="bv-date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              required
+              type="date"
+              min={minDate}
+              max={maxDate}
+            />
+          </Field>
+
+          <Field label="Time" htmlFor="bv-slot">
+            <Select
+              id="bv-slot"
               value={slot}
               onChange={(e) => setSlot(e.target.value)}
-              className="w-full border-0 border-b-[1.5px] border-ink/25 bg-transparent py-2.5 text-sm outline-none transition-colors focus:border-brass cursor-pointer"
-            >
-              {SLOTS.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </div>
+              options={SLOTS}
+            />
+          </Field>
         </div>
 
-        <Input
-          label="Anything we should know (optional)"
-          value={notes}
-          onChange={setNotes}
-        />
+        <Field label="Anything we should know (optional)" htmlFor="bv-notes">
+          <TextInput
+            id="bv-notes"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+          />
+        </Field>
 
         {/* Honeypot — hidden from people, irresistible to bots. */}
         <input
@@ -177,31 +185,6 @@ export default function BookVisit({
           No payment now — we confirm the slot by phone first.
         </p>
       </form>
-    </div>
-  );
-}
-
-function Input({
-  label,
-  value,
-  onChange,
-  ...rest
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange" | "value">) {
-  return (
-    <div>
-      <label className="label text-[0.625rem] text-ink-soft block mb-2">
-        {label}
-      </label>
-      <input
-        {...rest}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full border-0 border-b-[1.5px] border-ink/25 bg-transparent py-2.5 text-sm outline-none transition-colors focus:border-brass"
-      />
     </div>
   );
 }

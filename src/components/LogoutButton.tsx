@@ -14,9 +14,11 @@ export default function LogoutButton() {
   }
 
   return (
+    // Kept as a plain text link, matching the other admin nav items — a
+    // full Button here would out-weigh the links beside it.
     <button
       onClick={handleLogout}
-      className="text-paper/75 hover:text-brass-bright"
+      className="text-paper/75 hover:text-brass-bright transition-colors"
     >
       Logout
     </button>
