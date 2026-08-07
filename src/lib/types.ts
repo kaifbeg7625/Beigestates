@@ -18,7 +18,21 @@ export type Property = {
   maintenance: string | null;
   furnishing: string | null;
   available_from: string | null;
+  /** Generated in Postgres from `price` — never write to it. */
+  price_numeric: number | null;
+  /** Type-specific details; the shape per type lives in lib/property-schema. */
+  attributes: Record<string, unknown> | null;
   created_at: string;
+};
+
+/** A photo with the room it belongs to, so a gallery can group by space. */
+export type PropertyImage = {
+  id: string;
+  property_id: string;
+  url: string;
+  room: string | null;
+  caption: string | null;
+  sort_order: number;
 };
 
 export type Lead = {

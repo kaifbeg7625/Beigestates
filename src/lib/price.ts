@@ -10,6 +10,42 @@ export function parsePrice(price: string): number | null {
   return Number.isFinite(n) && n > 0 ? n : null;
 }
 
+/**
+ * Pulls a square-foot figure out of free text like "1,050 sq.ft" or "30 × 60 ft".
+ * Dimensions are multiplied out; a plain number is taken as-is.
+ */
+export function parseArea(area: string | null | undefined): number | null {
+  if (!area) return null;
+  const text = area.toLowerCase().replace(/,/g, "");
+
+  // "30 x 60", "30 × 60", "30*60" — a plot quoted by its sides.
+  const dims = text.match(/(\d+(?:\.\d+)?)\s*[x×*]\s*(\d+(?:\.\d+)?)/);
+  if (dims) {
+    const n = Number(dims[1]) * Number(dims[2]);
+    return n > 0 ? n : null;
+  }
+
+  const single = text.match(/(\d+(?:\.\d+)?)/);
+  if (!single) return null;
+  const n = Number(single[1]);
+  return n > 0 ? n : null;
+}
+
+/**
+ * Rate per square foot — the number Indian buyers actually compare on.
+ * Null when either side is missing or the maths would be nonsense.
+ */
+export function pricePerSqFt(
+  priceValue: number | null | undefined,
+  area: string | null | undefined
+): number | null {
+  const sqft = parseArea(area);
+  if (!priceValue || !sqft) return null;
+  const rate = priceValue / sqft;
+  // A rate under ₹100/sq.ft means the area was misread, not a bargain.
+  return rate >= 100 ? Math.round(rate) : null;
+}
+
 export const SALE_BUDGETS = [
   { label: "Any budget", max: null },
   { label: "Under ₹30 L", max: 3_000_000 },

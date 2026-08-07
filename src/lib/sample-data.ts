@@ -28,7 +28,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": null,
     "furnishing": null,
     "available_from": null,
-    "created_at": "2026-07-01T10:00:00.000Z"
+    "created_at": "2026-07-01T10:00:00.000Z",
+    "price_numeric": 4200000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000002",
@@ -55,7 +57,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": null,
     "furnishing": null,
     "available_from": null,
-    "created_at": "2026-07-02T10:00:00.000Z"
+    "created_at": "2026-07-02T10:00:00.000Z",
+    "price_numeric": 7250000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000003",
@@ -83,7 +87,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": null,
     "furnishing": null,
     "available_from": null,
-    "created_at": "2026-07-03T10:00:00.000Z"
+    "created_at": "2026-07-03T10:00:00.000Z",
+    "price_numeric": 4800000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000004",
@@ -109,7 +115,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": null,
     "furnishing": null,
     "available_from": null,
-    "created_at": "2026-07-04T10:00:00.000Z"
+    "created_at": "2026-07-04T10:00:00.000Z",
+    "price_numeric": 6300000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000005",
@@ -136,7 +144,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": null,
     "furnishing": null,
     "available_from": null,
-    "created_at": "2026-07-05T10:00:00.000Z"
+    "created_at": "2026-07-05T10:00:00.000Z",
+    "price_numeric": 11500000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000006",
@@ -164,7 +174,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": null,
     "furnishing": null,
     "available_from": null,
-    "created_at": "2026-07-06T10:00:00.000Z"
+    "created_at": "2026-07-06T10:00:00.000Z",
+    "price_numeric": 12500000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000007",
@@ -190,7 +202,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": null,
     "furnishing": null,
     "available_from": null,
-    "created_at": "2026-07-07T10:00:00.000Z"
+    "created_at": "2026-07-07T10:00:00.000Z",
+    "price_numeric": 21000000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000008",
@@ -217,7 +231,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": null,
     "furnishing": null,
     "available_from": null,
-    "created_at": "2026-07-08T10:00:00.000Z"
+    "created_at": "2026-07-08T10:00:00.000Z",
+    "price_numeric": 14800000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000009",
@@ -245,7 +261,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": null,
     "furnishing": null,
     "available_from": null,
-    "created_at": "2026-07-09T10:00:00.000Z"
+    "created_at": "2026-07-09T10:00:00.000Z",
+    "price_numeric": 32500000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000010",
@@ -271,7 +289,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": null,
     "furnishing": null,
     "available_from": null,
-    "created_at": "2026-07-10T10:00:00.000Z"
+    "created_at": "2026-07-10T10:00:00.000Z",
+    "price_numeric": 17200000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000011",
@@ -298,7 +318,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": null,
     "furnishing": null,
     "available_from": null,
-    "created_at": "2026-07-11T10:00:00.000Z"
+    "created_at": "2026-07-11T10:00:00.000Z",
+    "price_numeric": 3200000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000012",
@@ -326,7 +348,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": null,
     "furnishing": null,
     "available_from": null,
-    "created_at": "2026-07-12T10:00:00.000Z"
+    "created_at": "2026-07-12T10:00:00.000Z",
+    "price_numeric": 4500000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000013",
@@ -352,7 +376,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": null,
     "furnishing": null,
     "available_from": null,
-    "created_at": "2026-07-13T10:00:00.000Z"
+    "created_at": "2026-07-13T10:00:00.000Z",
+    "price_numeric": 2100000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000014",
@@ -379,7 +405,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": null,
     "furnishing": null,
     "available_from": null,
-    "created_at": "2026-07-14T10:00:00.000Z"
+    "created_at": "2026-07-14T10:00:00.000Z",
+    "price_numeric": 6200000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000015",
@@ -407,7 +435,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": null,
     "furnishing": null,
     "available_from": null,
-    "created_at": "2026-07-15T10:00:00.000Z"
+    "created_at": "2026-07-15T10:00:00.000Z",
+    "price_numeric": 2750000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000016",
@@ -433,7 +463,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": "₹2,500 / month",
     "furnishing": "Semi-furnished",
     "available_from": "2026-11-07",
-    "created_at": "2026-07-16T10:00:00.000Z"
+    "created_at": "2026-07-16T10:00:00.000Z",
+    "price_numeric": 18000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000017",
@@ -460,7 +492,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": "₹1,000 / month",
     "furnishing": "Fully furnished",
     "available_from": "2026-08-08",
-    "created_at": "2026-07-17T10:00:00.000Z"
+    "created_at": "2026-07-17T10:00:00.000Z",
+    "price_numeric": 26000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000018",
@@ -488,7 +522,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": "₹1,500 / month",
     "furnishing": "Unfurnished",
     "available_from": "2026-09-09",
-    "created_at": "2026-07-18T10:00:00.000Z"
+    "created_at": "2026-07-18T10:00:00.000Z",
+    "price_numeric": 11000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000019",
@@ -514,7 +550,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": "₹2,000 / month",
     "furnishing": "Semi-furnished",
     "available_from": "2026-10-01",
-    "created_at": "2026-07-19T10:00:00.000Z"
+    "created_at": "2026-07-19T10:00:00.000Z",
+    "price_numeric": 34000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000020",
@@ -541,7 +579,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": "₹2,500 / month",
     "furnishing": "Fully furnished",
     "available_from": "2026-11-02",
-    "created_at": "2026-07-20T10:00:00.000Z"
+    "created_at": "2026-07-20T10:00:00.000Z",
+    "price_numeric": 21000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000021",
@@ -569,7 +609,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": null,
     "furnishing": null,
     "available_from": null,
-    "created_at": "2026-07-21T10:00:00.000Z"
+    "created_at": "2026-07-21T10:00:00.000Z",
+    "price_numeric": 650000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000022",
@@ -595,7 +637,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": null,
     "furnishing": null,
     "available_from": null,
-    "created_at": "2026-07-22T10:00:00.000Z"
+    "created_at": "2026-07-22T10:00:00.000Z",
+    "price_numeric": 1150000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000023",
@@ -622,7 +666,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": null,
     "furnishing": null,
     "available_from": null,
-    "created_at": "2026-07-23T10:00:00.000Z"
+    "created_at": "2026-07-23T10:00:00.000Z",
+    "price_numeric": 285000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000024",
@@ -650,7 +696,9 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": null,
     "furnishing": null,
     "available_from": null,
-    "created_at": "2026-07-24T10:00:00.000Z"
+    "created_at": "2026-07-24T10:00:00.000Z",
+    "price_numeric": 3400000,
+    "attributes": {}
   },
   {
     "id": "00000000-0000-4000-8000-000000000025",
@@ -676,6 +724,8 @@ export const SAMPLE_PROPERTIES: Property[] = [
     "maintenance": null,
     "furnishing": null,
     "available_from": null,
-    "created_at": "2026-07-25T10:00:00.000Z"
+    "created_at": "2026-07-25T10:00:00.000Z",
+    "price_numeric": 380000,
+    "attributes": {}
   }
 ];
