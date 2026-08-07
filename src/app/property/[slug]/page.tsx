@@ -1,18 +1,33 @@
 import { cache, Suspense } from "react";
 import {
   getPropertyById,
+  getPropertyImages,
   getRelatedProperties,
   getPropertySlugSeeds,
 } from "@/lib/properties";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PropertyGallery from "@/components/PropertyGallery";
+import PropertyHeroBar from "@/components/PropertyHeroBar";
+import type { SpecItem } from "@/components/PropertySpecBar";
 import EnquireAboutProperty from "@/components/EnquireAboutProperty";
 import BookVisit from "@/components/BookVisit";
+import EmiCalculator from "@/components/EmiCalculator";
 import PropertyCard from "@/components/PropertyCard";
 import { Detail } from "@/components/Field";
+import { ButtonLink } from "@/components/Button";
+import {
+  IconBed,
+  IconBath,
+  IconRuler,
+  IconLayers,
+  IconCompass,
+} from "@/components/Icons";
 import { SITE } from "@/lib/site";
 import { idFromSlug, propertySlug } from "@/lib/slug";
+import { pricePerSqFt } from "@/lib/price";
+import { fieldsFor, hasRooms, isFinanceable, displayValue } from "@/lib/property-schema";
+import type { Property } from "@/lib/types";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -74,6 +89,55 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+/** First non-empty attribute value, or null — for picking whichever area
+ * field a listing actually has (carpet, built-up, or plot). */
+function firstAttr(attrs: Record<string, unknown> | null, ...keys: string[]) {
+  if (!attrs) return null;
+  for (const k of keys) {
+    const v = attrs[k];
+    if (v !== null && v !== undefined && String(v).trim() !== "") return String(v);
+  }
+  return null;
+}
+
+/**
+ * The quick-glance icon row — bedrooms/bathrooms for anything with rooms,
+ * an area figure, and the one attribute that most distinguishes the type
+ * (floor for a flat or rental, facing for a villa or plot). Deliberately
+ * short: this is the scannable summary, not the full spec sheet — that's
+ * the Detail grid below it.
+ */
+function buildSpecItems(property: Property): SpecItem[] {
+  const attrs = property.attributes;
+  const items: SpecItem[] = [];
+
+  if (hasRooms(property.property_type)) {
+    if (property.bedrooms) {
+      items.push({ Icon: IconBed, value: property.bedrooms, label: "Bedrooms" });
+    }
+    if (property.bathrooms) {
+      items.push({ Icon: IconBath, value: property.bathrooms, label: "Bathrooms" });
+    }
+  }
+
+  const area =
+    firstAttr(attrs, "carpet_area", "built_up_area", "plot_area", "area_covered") ??
+    property.area;
+  if (area) {
+    items.push({ Icon: IconRuler, value: area, label: "Area" });
+  }
+
+  if (property.property_type === "Flat" || property.property_type === "Rent") {
+    const floor = firstAttr(attrs, "floor");
+    if (floor) items.push({ Icon: IconLayers, value: floor, label: "Floor" });
+  } else if (property.property_type === "Villa" || property.property_type === "Plot") {
+    const facing = firstAttr(attrs, "facing");
+    if (facing) items.push({ Icon: IconCompass, value: facing, label: "Facing" });
+  }
+
+  return items.slice(0, 4);
+}
+
 export default async function PropertyDetailPage({ params }: Props) {
   const { slug } = await params;
   const property = await getProperty(slug);
@@ -85,18 +149,44 @@ export default async function PropertyDetailPage({ params }: Props) {
   const canonicalSlug = propertySlug(property);
   if (slug !== canonicalSlug) redirect(`/property/${canonicalSlug}`);
 
-  const images =
-    property.images && property.images.length > 0
-      ? property.images
-      : property.image_url
-      ? [property.image_url]
-      : [];
-
+  const images = await getPropertyImages(property.id);
   const isRental = property.property_type === "Rent";
-  const priceNumeric = property.price.replace(/[^0-9]/g, "");
+  const isPlot = property.property_type === "Plot";
 
-  // Deliberately not awaited here — the nearby listings are below the fold,
-  // so they stream in via Suspense instead of holding up the whole page.
+  const specItems = buildSpecItems(property);
+
+  // Every field this type of listing can carry, filtered to the ones that
+  // actually have a value. lib/property-schema is the single definition of
+  // which fields belong to which type — the admin form reads the same list.
+  const attributeDetails = fieldsFor(property.property_type)
+    .map((field) => ({
+      label: field.label,
+      value: displayValue(field, property.attributes?.[field.key]),
+    }))
+    .filter((d): d is { label: string; value: string } => d.value !== null);
+
+  const sqFtRate = isPlot
+    ? pricePerSqFt(
+        property.price_numeric,
+        firstAttr(property.attributes, "plot_area") ?? property.area
+      )
+    : null;
+
+  // A short lead-in below the photo; the full text still gets its own
+  // section further down, linked to by the "More about this property" button.
+  const descriptionTeaser = property.description
+    ? property.description.length > 200
+      ? property.description.slice(0, 200).replace(/\s+\S*$/, "") + "…"
+      : property.description
+    : null;
+
+  // Both come from the free-form attributes column rather than
+  // lib/property-schema's fixed field list — they're cross-cutting metadata
+  // (legal registration, a PDF link), not a physical spec every listing of
+  // a type has, so forcing them into every type's field list would show an
+  // empty input on listings that will never have one.
+  const reraNumber = firstAttr(property.attributes, "rera_number");
+  const brochureUrl = firstAttr(property.attributes, "brochure_url");
 
   const terms = isRental
     ? [
@@ -132,7 +222,7 @@ export default async function PropertyDetailPage({ params }: Props) {
               property.description ||
               `${property.title} in ${property.location}`,
             url: `${SITE_URL}/property/${canonicalSlug}`,
-            image: images,
+            image: images.map((i) => i.url),
             address: {
               "@type": "PostalAddress",
               addressLocality: property.location,
@@ -141,7 +231,7 @@ export default async function PropertyDetailPage({ params }: Props) {
             },
             offers: {
               "@type": "Offer",
-              price: priceNumeric || undefined,
+              price: property.price_numeric || undefined,
               priceCurrency: "INR",
               availability:
                 property.status === "Ready to Move"
@@ -187,38 +277,78 @@ export default async function PropertyDetailPage({ params }: Props) {
               </ol>
             </nav>
 
+            {/* The photo comes first, full width and tall — an exception
+                made specifically for this page (PropertyGallery's overlay
+                prop is unset everywhere else). Title, eyebrow, and location
+                sit on the photo itself rather than in a text column beside
+                it, so the first thing a visitor sees is the property, not a
+                paragraph about it. */}
             <PropertyGallery
               images={images}
               videos={property.videos ?? []}
               title={property.title}
+              heightClassName="h-[440px] sm:h-[560px] lg:h-[620px]"
+              showThumbnails={false}
+              overlay={
+                <div className="max-w-2xl">
+                  <div className="label text-brass-bright mb-3">
+                    {property.property_type} · {property.status}
+                  </div>
+                  <h1 className="font-extrabold text-3xl sm:text-5xl text-paper leading-[1.05] tracking-tight mb-2">
+                    {property.title}
+                  </h1>
+                  <p className="text-paper/80 text-lg">{property.location}</p>
+                </div>
+              }
             />
 
-            <div className="grid lg:grid-cols-[1.6fr_1fr] gap-10 lg:gap-14 mt-12">
+            {/* Pulled up to overlap the bottom of the photo — the same
+                "floating card over the hero image" move the homepage search
+                bar already does. */}
+            <PropertyHeroBar
+              items={specItems}
+              price={property.price}
+              sqFtRate={sqFtRate}
+              ctaHref="#book-visit"
+              className="relative z-10 -mt-10 sm:-mt-14 mb-12"
+            />
+
+            <div className="grid lg:grid-cols-[1.6fr_1fr] gap-10 lg:gap-14">
               <div>
-                <div className="label text-brass mb-4">
-                  {property.property_type} · {property.status}
-                </div>
-                <h1 className="font-extrabold text-4xl sm:text-5xl leading-[1.05] tracking-tight mb-3">
-                  {property.title}
-                </h1>
-                <p className="text-lg text-ink-soft mb-8">{property.location}</p>
+                {(descriptionTeaser || brochureUrl) && (
+                  <div className="mb-8">
+                    {descriptionTeaser && (
+                      <p className="text-ink-soft leading-relaxed mb-5">
+                        {descriptionTeaser}
+                      </p>
+                    )}
+                    <div className="flex flex-wrap gap-3">
+                      {descriptionTeaser && (
+                        <ButtonLink href="#about-property" variant="ghost">
+                          More about this property
+                        </ButtonLink>
+                      )}
+                      {brochureUrl && (
+                        <ButtonLink href={brochureUrl} target="_blank" rel="noopener noreferrer" variant="ghost">
+                          Download brochure
+                        </ButtonLink>
+                      )}
+                    </div>
+                  </div>
+                )}
 
-                <div className="font-extrabold text-4xl text-brass mb-10">
-                  {property.price}
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 mb-8 surface rounded-lg p-7">
-                  {property.area && <Detail label="Area" value={property.area} />}
-                  {property.bedrooms && (
-                    <Detail label="Bedrooms" value={property.bedrooms} />
-                  )}
-                  {property.bathrooms && (
-                    <Detail label="Bathrooms" value={property.bathrooms} />
-                  )}
-                  <Detail label="Type" value={property.property_type} />
-                  <Detail label="Status" value={property.status} />
-                  <Detail label="Locality" value={property.location} />
-                </div>
+                {(attributeDetails.length > 0 || reraNumber) && (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 mb-8 surface rounded-xl p-7">
+                    <Detail label="Locality" value={property.location} />
+                    <Detail label="Status" value={property.status} />
+                    {attributeDetails.map((d) => (
+                      <Detail key={d.label} label={d.label} value={d.value} />
+                    ))}
+                    {reraNumber && (
+                      <Detail label="RERA registration no." value={reraNumber} />
+                    )}
+                  </div>
+                )}
 
                 {/* Rentals live or die on the money terms, so they get their
                     own block instead of being buried in the description. */}
@@ -227,21 +357,28 @@ export default async function PropertyDetailPage({ params }: Props) {
                     <p className="label text-brass mb-5">Rental terms</p>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                       {terms.map((t) => (
-                        <div key={(t as { label: string }).label}>
-                          <p className="label text-[0.625rem] text-ink-soft/70 mb-1.5">
-                            {(t as { label: string }).label}
-                          </p>
-                          <p className="font-bold">
-                            {(t as { value: string }).value}
-                          </p>
-                        </div>
+                        <Detail
+                          key={(t as { label: string }).label}
+                          label={(t as { label: string }).label}
+                          value={(t as { value: string }).value}
+                        />
                       ))}
                     </div>
                   </div>
                 )}
 
+                {/* Rent and interior work can't be financed — an EMI on a
+                    monthly rent or a fit-out quote doesn't mean anything. */}
+                {isFinanceable(property.property_type) &&
+                  property.price_numeric != null &&
+                  property.price_numeric > 0 && (
+                    <div className="mb-8">
+                      <EmiCalculator price={property.price_numeric} />
+                    </div>
+                  )}
+
                 {property.description && (
-                  <div>
+                  <div id="about-property" className="scroll-mt-28">
                     <h2 className="label text-ink-soft mb-4">
                       About this property
                     </h2>
@@ -252,7 +389,10 @@ export default async function PropertyDetailPage({ params }: Props) {
                 )}
               </div>
 
-              <div className="lg:sticky lg:top-28 lg:self-start space-y-5">
+              <div
+                id="book-visit"
+                className="scroll-mt-28 lg:sticky lg:top-28 lg:self-start space-y-5"
+              >
                 <BookVisit
                   propertyId={property.id}
                   propertyTitle={property.title}

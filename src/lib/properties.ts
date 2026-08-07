@@ -1,5 +1,5 @@
 import { createPublicClient } from "./supabase/public";
-import type { Property } from "./types";
+import type { Property, PropertyImage } from "./types";
 import { SAMPLE_PROPERTIES } from "./sample-data";
 
 // ---------------------------------------------------------------------------
@@ -64,6 +64,39 @@ export async function getPropertyById(id: string): Promise<Property | null> {
     .single<Property>();
 
   return data ?? null;
+}
+
+/**
+ * Room-tagged photos for one property, in the order they were uploaded.
+ * Sample data has no property_images rows, so it's synthesised from the
+ * flat images array with no room label — the gallery still works, it just
+ * has nothing to group by.
+ */
+export async function getPropertyImages(propertyId: string): Promise<PropertyImage[]> {
+  if (useSample) {
+    const p = SAMPLE_PROPERTIES.find((row) => row.id === propertyId);
+    const urls = p?.images?.length ? p.images : p?.image_url ? [p.image_url] : [];
+    return sample(
+      urls.map((url, i) => ({
+        id: `${propertyId}-${i}`,
+        property_id: propertyId,
+        url,
+        room: null,
+        caption: null,
+        sort_order: i,
+      }))
+    );
+  }
+
+  const supabase = createPublicClient();
+  const { data } = await supabase
+    .from("property_images")
+    .select("*")
+    .eq("property_id", propertyId)
+    .order("sort_order", { ascending: true })
+    .returns<PropertyImage[]>();
+
+  return data ?? [];
 }
 
 export async function getRelatedProperties(

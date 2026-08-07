@@ -133,3 +133,52 @@ export function IconDoc(p: IconProps) {
     </Svg>
   );
 }
+
+// ---- Property spec icons, used on the stat bar on the property page. ----
+
+export function IconBed(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M3 19v-7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v7" />
+      <path d="M3 19h18M5 10V6a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v4" />
+      <path d="M12 10V8a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v2" />
+    </Svg>
+  );
+}
+
+export function IconBath(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M4 12h16v3a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5Z" />
+      <path d="M4 12V7a2 2 0 0 1 3.6-1.2M8 12V6a2 2 0 0 1 2-2h.5" />
+      <path d="M8 20v1.5M15 20v1.5" />
+    </Svg>
+  );
+}
+
+export function IconRuler(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M3 16.5 16.5 3l4.5 4.5L7.5 21Z" />
+      <path d="m8.5 12.5 1.5 1.5M11.5 9.5 13 11M14.5 6.5 16 8" />
+    </Svg>
+  );
+}
+
+export function IconLayers(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="m12 3 9 5-9 5-9-5Z" />
+      <path d="m3 13 9 5 9-5" />
+    </Svg>
+  );
+}
+
+export function IconCompass(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="m15 9-2 5-5 2 2-5Z" />
+    </Svg>
+  );
+}

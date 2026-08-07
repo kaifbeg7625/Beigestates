@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Image from "next/image";
 import { IconButton } from "./Button";
+import type { PropertyImage } from "@/lib/types";
 
-type MediaItem = { type: "image" | "video"; url: string };
+type MediaItem = { type: "image" | "video"; url: string; room: string | null };
 
 function getYouTubeId(url: string): string | null {
   const match = url.match(
@@ -51,26 +52,87 @@ export default function PropertyGallery({
   images,
   videos = [],
   title,
+  overlay,
+  heightClassName = "h-[340px] sm:h-[440px]",
+  showThumbnails = true,
 }: {
-  images: string[];
+  images: PropertyImage[];
   videos?: string[];
   title: string;
+  /**
+   * Content rendered over the bottom of the main photo, with its own scrim.
+   * Used on the property page only — the title/eyebrow/location sit on the
+   * photo itself for a full-screen-first look, rather than beside it.
+   * Every other use of this component (none yet elsewhere) leaves it unset
+   * and gets the plain photo.
+   */
+  overlay?: React.ReactNode;
+  /** Lets the one caller that wants a taller, more cinematic photo ask for
+   * it without changing the default for everyone else. */
+  heightClassName?: string;
+  /**
+   * Off for the property page's hero use: with the strip rendered, a
+   * caller pulling a sibling element up with a negative margin overlaps
+   * the *thumbnails*, not the photo, since the strip sits between them in
+   * flow. Off, the photo's bottom edge is the last thing in normal flow,
+   * so the overlap lands where it's meant to. Browsing still works via the
+   * lightbox's arrows.
+   */
+  showThumbnails?: boolean;
 }) {
-  const media: MediaItem[] = [
-    ...images.map((url) => ({ type: "image" as const, url })),
-    ...videos.map((url) => ({ type: "video" as const, url })),
-  ];
+  const media: MediaItem[] = useMemo(
+    () => [
+      ...images.map((img) => ({
+        type: "image" as const,
+        url: img.url,
+        room: img.room,
+      })),
+      ...videos.map((url) => ({ type: "video" as const, url, room: null })),
+    ],
+    [images, videos]
+  );
 
+  // Someone shopping a 4BHK wants to see each bedroom and know which is
+  // which — a flat strip of thumbnails can't say that. Rooms that were
+  // actually tagged become filter chips; if nothing was tagged, this list
+  // is empty and the chip row just doesn't render.
+  const rooms = useMemo(() => {
+    const seen = new Set<string>();
+    const ordered: string[] = [];
+    for (const m of media) {
+      if (m.room && !seen.has(m.room)) {
+        seen.add(m.room);
+        ordered.push(m.room);
+      }
+    }
+    return ordered;
+  }, [media]);
+
+  const [roomFilter, setRoomFilter] = useState<string | null>(null);
   const [active, setActive] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
+  const visible = useMemo(
+    () => (roomFilter ? media.filter((m) => m.room === roomFilter) : media),
+    [media, roomFilter]
+  );
+
+  // Clamp rather than reset to 0 — picking a room chip should land on that
+  // room's first photo, not silently keep whatever index was active before.
+  const activeIndex = Math.min(active, Math.max(visible.length - 1, 0));
+
+  function selectRoom(room: string | null) {
+    setRoomFilter(room);
+    setActive(0);
+  }
+
   const goPrev = useCallback(() => {
-    setActive((i) => (i - 1 + media.length) % media.length);
-  }, [media.length]);
+    setActive((i) => (i - 1 + visible.length) % visible.length);
+  }, [visible.length]);
 
   const goNext = useCallback(() => {
-    setActive((i) => (i + 1) % media.length);
-  }, [media.length]);
+    setActive((i) => (i + 1) % visible.length);
+  }, [visible.length]);
 
   useEffect(() => {
     if (!lightboxOpen) return;
@@ -91,22 +153,43 @@ export default function PropertyGallery({
     );
   }
 
-  const activeItem = media[active];
+  const activeItem = visible[activeIndex];
 
   return (
     <div>
+      {rooms.length > 1 && (
+        <div className="flex gap-2 mb-3 overflow-x-auto pb-1">
+          <RoomChip active={roomFilter === null} onClick={() => selectRoom(null)}>
+            All photos
+          </RoomChip>
+          {rooms.map((room) => (
+            <RoomChip
+              key={room}
+              active={roomFilter === room}
+              onClick={() => selectRoom(room)}
+            >
+              {room}
+            </RoomChip>
+          ))}
+        </div>
+      )}
+
       <button
         onClick={() => setLightboxOpen(true)}
-        className="w-full h-[340px] sm:h-[440px] relative rounded-xl overflow-hidden bg-paper-dim block group"
+        className={`w-full ${heightClassName} relative rounded-xl overflow-hidden bg-paper-dim block group`}
         aria-label="Open full-screen gallery"
       >
         {activeItem.type === "image" ? (
           <Image
             src={activeItem.url}
-            alt={`Photo ${active + 1} of ${title}`}
+            alt={
+              activeItem.room
+                ? `${activeItem.room} — ${title}`
+                : `Photo ${activeIndex + 1} of ${title}`
+            }
             fill
             priority
-            sizes="(max-width: 768px) 100vw, 66vw"
+            sizes="100vw"
             className="object-cover"
           />
         ) : (
@@ -121,21 +204,50 @@ export default function PropertyGallery({
             </div>
           </div>
         )}
-        <div className="absolute bottom-3 right-3 bg-ink/75 text-paper text-sm font-medium px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
-          {media.length} {media.length === 1 ? "item" : "items"} — Click to view
+
+        {activeItem.room && (
+          <span className="absolute top-3 left-3 label text-[0.6875rem] bg-paper/95 text-ink px-3 py-1.5 rounded-lg">
+            {activeItem.room}
+          </span>
+        )}
+
+        {/* Scrim + caller-supplied title block — only present on the
+            property page, where the photo comes first and carries the
+            title, eyebrow, and location directly on it. */}
+        {overlay && (
+          <>
+            <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(20,17,11,0.88)_0%,rgba(20,17,11,0.15)_45%,transparent_70%)]" />
+            <div className="absolute inset-x-0 bottom-0 p-6 sm:p-10 pointer-events-none">
+              {overlay}
+            </div>
+          </>
+        )}
+
+        {/* Hover-only made sense when the thumbnail strip below already
+            showed there was more to see. With showThumbnails off, this
+            badge is the only sign of that, so it stays visible — a
+            hover-only hint would never appear on a touch device at all. */}
+        <div
+          className={`absolute bottom-3 right-3 bg-ink/75 text-paper text-sm font-medium px-3 py-1.5 rounded-lg transition-opacity ${
+            showThumbnails ? "opacity-0 group-hover:opacity-100" : "opacity-100"
+          }`}
+        >
+          {visible.length} {visible.length === 1 ? "item" : "items"} — Click to view
         </div>
       </button>
 
-      {media.length > 1 && (
+      {showThumbnails && visible.length > 1 && (
         <div className="flex gap-3 mt-3 overflow-x-auto pb-1">
-          {media.map((item, i) => (
+          {visible.map((item, i) => (
             <button
               key={item.url + i}
               onClick={() => setActive(i)}
               className={`relative w-20 h-16 shrink-0 rounded-lg overflow-hidden border-2 transition-colors ${
-                i === active ? "border-brass" : "border-transparent opacity-70 hover:opacity-100"
+                i === activeIndex ? "border-brass" : "border-transparent opacity-70 hover:opacity-100"
               }`}
-              aria-label={`View ${item.type} ${i + 1} of ${title}`}
+              aria-label={
+                item.room ? `View ${item.room}` : `View ${item.type} ${i + 1} of ${title}`
+              }
             >
               {item.type === "image" ? (
                 <Image src={item.url} alt="" fill sizes="80px" className="object-cover" />
@@ -192,7 +304,11 @@ export default function PropertyGallery({
               <div className="relative w-full aspect-[4/3] sm:aspect-video">
                 <Image
                   src={activeItem.url}
-                  alt={`Photo ${active + 1} of ${title}`}
+                  alt={
+                    activeItem.room
+                      ? `${activeItem.room} — ${title}`
+                      : `Photo ${activeIndex + 1} of ${title}`
+                  }
                   fill
                   sizes="90vw"
                   className="object-contain"
@@ -202,7 +318,8 @@ export default function PropertyGallery({
               <VideoPlayer url={activeItem.url} className="w-full aspect-video rounded" />
             )}
             <p className="text-center text-paper/60 text-sm mt-4">
-              {active + 1} / {media.length}
+              {activeItem.room ? `${activeItem.room} — ` : ""}
+              {activeIndex + 1} / {visible.length}
             </p>
           </div>
 
@@ -219,5 +336,28 @@ export default function PropertyGallery({
         </div>
       )}
     </div>
+  );
+}
+
+function RoomChip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`shrink-0 px-4 py-2 rounded-full text-sm font-bold border-[1.5px] transition-colors whitespace-nowrap ${
+        active
+          ? "bg-ink text-paper border-ink"
+          : "bg-shell border-ink/15 text-ink-soft hover:border-ink hover:text-ink"
+      }`}
+    >
+      {children}
+    </button>
   );
 }

@@ -149,10 +149,21 @@
 body {
   background: var(--paper);
   color: var(--ink);
-  font-family: "IBM Plex Sans", sans-serif;
+  /* Was hardcoded to "IBM Plex Sans" — a font this site stopped importing
+     when it moved to Montserrat, so every element without its own explicit
+     Tailwind font utility (i.e. almost everything) was silently falling
+     back to the browser's default sans-serif instead. One font, from the
+     token, so nothing can drift from it by omission. */
+  font-family: var(--font-sans);
   font-size: var(--text-base);
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
+}
+
+/* In-page anchors (the property page's "book a visit" jumps) glide instead
+   of snapping. Turned off under reduced motion below. */
+html {
+  scroll-behavior: smooth;
 }
 
 /* Page gutter. Everything used to sit in a 1024px column, which on a normal
@@ -188,11 +199,14 @@ body {
   max-width: 34rem;
 }
 
-/* Mono is used for eyebrows and labels. At small sizes it needs the extra
-   tracking to stay legible, so bake it in rather than repeating it. */
+/* Eyebrow / micro-label style — small, uppercase, wide-tracked. This used to
+   switch to IBM Plex Mono, which put a second font on the page anywhere a
+   label sat inside an h2/h3 (ProblemSolution, the property page's "About
+   this property" heading). Same font as everything else now; the caps and
+   tracking still make it read as a label. */
 .label {
-  font-family: "IBM Plex Mono", monospace;
   font-size: 0.75rem;         /* 12 */
+  font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   line-height: 1.4;
@@ -262,6 +276,9 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   .animate-fade-up {
     animation: none;
   }
