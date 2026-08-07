@@ -172,13 +172,18 @@ export default async function PropertyDetailPage({ params }: Props) {
       )
     : null;
 
-  // A short lead-in below the photo; the full text still gets its own
-  // section further down, linked to by the "More about this property" button.
-  const descriptionTeaser = property.description
-    ? property.description.length > 200
+  // A short lead-in below the photo, only when there's actually more text
+  // below it to jump to. Most listings here run one or two sentences —
+  // showing the same short paragraph twice with a "More about this
+  // property" button between two identical copies of it was pointless.
+  // isTruncated is what decides whether the teaser+button render at all;
+  // when the description already fits, the full "About this property"
+  // section further down is the only place it appears.
+  const isDescriptionTruncated = (property.description?.length ?? 0) > 200;
+  const descriptionTeaser =
+    isDescriptionTruncated && property.description
       ? property.description.slice(0, 200).replace(/\s+\S*$/, "") + "…"
-      : property.description
-    : null;
+      : null;
 
   // Both come from the free-form attributes column rather than
   // lib/property-schema's fixed field list — they're cross-cutting metadata

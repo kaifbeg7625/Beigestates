@@ -1,3 +1,5 @@
+"use client";
+
 import { forwardRef } from "react";
 import Link from "next/link";
 
@@ -81,10 +83,40 @@ export function ButtonLink({
   arrow,
   ...rest
 }: Common & { href: string } & React.AnchorHTMLAttributes<HTMLAnchorElement>) {
-  const external = href.startsWith("http") || href.startsWith("tel:") || href.startsWith("mailto:");
+  const isHashLink = href.startsWith("#");
+  const isExternal =
+    href.startsWith("http") || href.startsWith("tel:") || href.startsWith("mailto:");
   const cls = `group ${classes(variant, size, className)}`;
 
-  if (external) {
+  // Same-page anchors scroll themselves instead of relying on the browser's
+  // default fragment-navigation. Next's App Router intercepts every <a>
+  // click app-wide for its own client transitions — true even for a plain
+  // <a>, not just next/link's <Link> — and that interception updates
+  // location.hash without performing the actual scroll. Taking over the
+  // scroll here is the only way this reliably moves the page.
+  if (isHashLink) {
+    return (
+      <a
+        href={href}
+        className={cls}
+        onClick={(e) => {
+          e.preventDefault();
+          const reduceMotion = window.matchMedia(
+            "(prefers-reduced-motion: reduce)"
+          ).matches;
+          document
+            .getElementById(href.slice(1))
+            ?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+          history.pushState(null, "", href);
+        }}
+        {...rest}
+      >
+        <Inner arrow={arrow}>{children}</Inner>
+      </a>
+    );
+  }
+
+  if (isExternal) {
     return (
       <a href={href} className={cls} {...rest}>
         <Inner arrow={arrow}>{children}</Inner>
