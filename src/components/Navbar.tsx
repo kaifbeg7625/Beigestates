@@ -193,10 +193,10 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* Right column — one wrapper so the grid stays at three tracks.
-              Solid dark pill, like the reference's Sign-up button; the gold
-              fill read as cheap against the cream. */}
-          <div className="flex items-center justify-end gap-3">
+          {/* Pinned to column 3. Without col-start-3 it auto-placed into the
+              middle track on mobile — where the nav is display:none — so the
+              buttons drifted to the centre of the bar. */}
+          <div className="col-start-3 flex items-center justify-end gap-3">
             <a
               href={`tel:${SITE.phones[0].tel}`}
               className="group hidden md:inline-flex items-center gap-2.5 px-7 py-4 rounded-lg bg-ink text-paper text-base font-bold transition-colors duration-300 hover:bg-[#1C1009]"

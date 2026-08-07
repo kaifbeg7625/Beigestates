@@ -17,7 +17,7 @@ export default function Story() {
             call.
           </h2>
 
-          <p className="text-lg text-ink-soft leading-relaxed">
+          <p className="text-ink-soft leading-relaxed">
             Lucknow is full of good properties and good deals — what&apos;s
             missing is someone accountable to walk you through it. No blasting
             your number to ten agents. No listings that vanished last month. No

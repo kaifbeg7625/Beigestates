@@ -28,8 +28,11 @@ function HeroCopy() {
         Dream Home
       </h1>
 
+      {/* Body copy sits at the 18px base. text-lg/xl are for card titles and
+          prices — using them on paragraphs pushed everything to 20–22px and
+          made the whole page read oversized. */}
       <p
-        className="text-lg sm:text-xl text-ink-soft leading-relaxed mb-10 max-w-md animate-fade-up"
+        className="text-ink-soft leading-relaxed mb-10 max-w-md animate-fade-up"
         style={{ animationDelay: "0.2s" }}
       >
         Flats, plots, and villas across Lucknow — handled by one person, from
@@ -70,7 +73,7 @@ export default async function Hero() {
               <div className="max-w-xl">
                 <HeroCopy />
               </div>
-              <div className="relative h-[380px] sm:h-[480px] lg:h-[560px] rounded-xl overflow-hidden bg-paper-dim shadow-e3 lg:-mr-16 xl:-mr-24">
+              <div className="relative h-[340px] sm:h-[440px] lg:h-[500px] rounded-xl overflow-hidden bg-paper-dim shadow-e3">
                 <Image
                   src="/hero.webp"
                   alt="Residential towers along a tree-lined road in Lucknow"

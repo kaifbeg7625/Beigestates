@@ -69,7 +69,7 @@ export default function PageHeader({
         </h1>
 
         {intro && (
-          <p className="text-lg text-ink-soft leading-relaxed max-w-2xl mt-6">
+          <p className="text-ink-soft leading-relaxed max-w-2xl mt-6">
             {intro}
           </p>
         )}

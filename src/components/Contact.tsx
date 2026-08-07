@@ -5,7 +5,7 @@ import { IconPhone, IconWhatsApp, IconMail, IconPin } from "./Icons";
 
 export default function Contact() {
   return (
-    <section id="contact" className="py-24 sm:py-28 bg-paper">
+    <section id="contact" className="py-20 sm:py-24 bg-paper">
       <div className="container-page">
         <div className="max-w-2xl mb-14">
           <SectionLabel>Get Started</SectionLabel>

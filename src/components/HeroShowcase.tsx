@@ -40,14 +40,17 @@ export default function HeroShowcase({
         <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] gap-12 lg:gap-16 items-center">
           <div className="max-w-xl">{children}</div>
 
-          {/* Image column. Rounded, shadowed, and allowed to run past the
-              right gutter the way the reference does. */}
+          {/* Image column. It used to carry a negative right margin so it
+              bled past the gutter like the reference does — but the reference
+              bleeds a cut-out illustration, whereas these are photographs
+              with a caption on them, so the edge just got sliced off and the
+              section clipped it. It stays inside the container now. */}
           <div
             className="relative"
             onMouseEnter={() => setPaused(true)}
             onMouseLeave={() => setPaused(false)}
           >
-            <div className="relative h-[380px] sm:h-[480px] lg:h-[560px] rounded-xl overflow-hidden bg-paper-dim shadow-e3 lg:-mr-16 xl:-mr-24">
+            <div className="relative h-[340px] sm:h-[440px] lg:h-[500px] rounded-xl overflow-hidden bg-paper-dim shadow-e3">
               {slides.map((s, i) => (
                 <Link
                   key={s.id}

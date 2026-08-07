@@ -13,7 +13,7 @@ export default async function Localities() {
   const total = areas[0].total;
 
   return (
-    <section className="py-24 sm:py-32 bg-shell">
+    <section className="py-20 sm:py-24 bg-shell">
       <div className="container-page">
         <Reveal>
           <div className="max-w-xl mb-14">

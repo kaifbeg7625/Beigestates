@@ -34,14 +34,14 @@ const reasons = [
 
 export default function WhyUs() {
   return (
-    <section className="py-24 sm:py-32 bg-paper">
+    <section className="py-20 sm:py-24 bg-paper">
       <div className="container-page">
         <Reveal>
           <div className="text-center max-w-2xl mx-auto mb-16">
             <h2 className="font-extrabold text-4xl sm:text-5xl leading-[1.15] tracking-tight mb-5">
               Why Work With Us
             </h2>
-            <p className="text-lg text-ink-soft leading-relaxed">
+            <p className="text-ink-soft leading-relaxed">
               Elevating your property search with local knowledge, straight
               answers, and one point of contact who has to see it through.
             </p>

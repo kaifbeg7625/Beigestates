@@ -25,7 +25,7 @@ export default async function FeaturedListings() {
   ].filter(Boolean);
 
   return (
-    <section className="py-24 sm:py-32 bg-paper">
+    <section className="py-20 sm:py-24 bg-paper">
       <div className="container-page">
         <Reveal>
           <div className="flex items-end justify-between flex-wrap gap-6 mb-14">
