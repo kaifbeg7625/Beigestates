@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import QuickExplore from "@/components/QuickExplore";
+import Credentials from "@/components/Credentials";
 import FeaturedListings from "@/components/FeaturedListings";
 import Localities from "@/components/Localities";
 import WhyUs from "@/components/WhyUs";
@@ -18,8 +18,11 @@ export default function Home() {
     <>
       <Navbar />
       <main id="main-content">
+        {/* QuickExplore used to sit here — five category tiles directly under
+            a search bar that already has a Type dropdown. 315px doing the
+            same job twice. The footer still links every category. */}
         <Hero />
-        <QuickExplore />
+        <Credentials />
         <FeaturedListings />
         <Localities />
         <WhyUs />

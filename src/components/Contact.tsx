@@ -3,22 +3,26 @@ import EnquiryForm from "./EnquiryForm";
 import { SITE, waLink } from "@/lib/site";
 import { IconPhone, IconWhatsApp, IconMail, IconPin } from "./Icons";
 
-export default function Contact() {
+// `headless` drops the heading block for /contact, where PageHeader has
+// already introduced the page — otherwise the same sentence appears twice.
+export default function Contact({ headless = false }: { headless?: boolean }) {
   return (
-    <section id="contact" className="py-20 sm:py-24 bg-paper">
+    <section id="contact" className="py-16 sm:py-20 bg-paper">
       <div className="container-page">
-        <div className="max-w-2xl mb-14">
-          <SectionLabel>Get Started</SectionLabel>
-          <h2 className="font-extrabold text-3xl sm:text-4xl leading-tight mb-5">
-            Tell us what you&apos;re looking for.
-          </h2>
-          <p className="text-ink-soft leading-relaxed">
-            Fill in the form and we&apos;ll come back to you, or skip it and
-            call — whichever&apos;s easier.
-          </p>
-        </div>
+        {!headless && (
+          <div className="max-w-2xl mb-12">
+            <SectionLabel>Get Started</SectionLabel>
+            <h2 className="font-extrabold text-3xl sm:text-4xl leading-tight mb-5">
+              Tell us what you&apos;re looking for.
+            </h2>
+            <p className="text-ink-soft leading-relaxed">
+              Fill in the form and we&apos;ll come back to you, or skip it and
+              call — whichever&apos;s easier.
+            </p>
+          </div>
+        )}
 
-        <div className="grid lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-14 items-start">
+        <div className="grid lg:grid-cols-[1.15fr_1fr] gap-8 lg:gap-12 items-start">
           <div className="surface-raised rounded-lg p-7 sm:p-9">
             <EnquiryForm />
           </div>

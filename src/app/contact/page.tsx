@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import PageHeader from "@/components/PageHeader";
 import Contact from "@/components/Contact";
 import type { Metadata } from "next";
 
@@ -21,16 +22,13 @@ export default function ContactPage() {
     <>
       <Navbar />
       <main id="main-content">
-        <div className="container-page pt-14 pb-2">
-          <div className="label text-brass mb-3 flex items-center gap-2">
-            <span className="w-[18px] h-px bg-brass" />
-            Contact
-          </div>
-          <h1 className="font-extrabold text-3xl">
-            Contact Beig Estates
-          </h1>
-        </div>
-        <Contact />
+        <PageHeader
+          title="Contact Beig Estates"
+          crumbs={[{ label: "Contact" }]}
+        />
+        {/* The section carries its own heading on the homepage; on this page
+            PageHeader already said it, so it renders headless. */}
+        <Contact headless />
       </main>
       <Footer />
     </>
