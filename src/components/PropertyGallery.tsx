@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import Image from "next/image";
 import { IconButton } from "./Button";
 import type { PropertyImage } from "@/lib/types";
@@ -134,6 +134,36 @@ export default function PropertyGallery({
     setActive((i) => (i + 1) % visible.length);
   }, [visible.length]);
 
+  // Swipe on the main photo. A ref, not state — touch coordinates during a
+  // drag don't need to trigger a render, only the final decision does.
+  // swiped guards the click handler: a touchend fires a click right after
+  // it on most mobile browsers, and without this a swipe would also pop
+  // the lightbox open.
+  const touchStartX = useRef<number | null>(null);
+  const swiped = useRef(false);
+
+  function onTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX;
+  }
+
+  function onTouchEnd(e: React.TouchEvent) {
+    if (touchStartX.current == null) return;
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(delta) < 40) return;
+    swiped.current = true;
+    if (delta < 0) goNext();
+    else goPrev();
+  }
+
+  function onPhotoClick() {
+    if (swiped.current) {
+      swiped.current = false;
+      return;
+    }
+    setLightboxOpen(true);
+  }
+
   useEffect(() => {
     if (!lightboxOpen) return;
     function onKeyDown(e: KeyboardEvent) {
@@ -174,11 +204,14 @@ export default function PropertyGallery({
         </div>
       )}
 
-      <button
-        onClick={() => setLightboxOpen(true)}
-        className={`w-full ${heightClassName} relative rounded-xl overflow-hidden bg-paper-dim block group`}
-        aria-label="Open full-screen gallery"
-      >
+      <div className="relative">
+        <button
+          onClick={onPhotoClick}
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+          className={`w-full ${heightClassName} relative rounded-xl overflow-hidden bg-paper-dim block group`}
+          aria-label="Open full-screen gallery"
+        >
         {activeItem.type === "image" ? (
           <Image
             src={activeItem.url}
@@ -232,9 +265,41 @@ export default function PropertyGallery({
             showThumbnails ? "opacity-0 group-hover:opacity-100" : "opacity-100"
           }`}
         >
-          {visible.length} {visible.length === 1 ? "item" : "items"} — Click to view
+          {activeIndex + 1} / {visible.length} — Click to view
         </div>
-      </button>
+        </button>
+
+        {/* Arrows directly on the photo — useful in both modes, but the
+            only way to move between photos at all when showThumbnails is
+            off. Siblings of the photo's own button, not nested inside it
+            (a button inside a button is invalid), so a click lands on
+            whichever is on top under the cursor without needing to stop
+            it from reaching the one underneath. */}
+        {visible.length > 1 && (
+          <>
+            <IconButton
+              label="Previous photo"
+              tone="onDark"
+              onClick={(e) => { e.stopPropagation(); goPrev(); }}
+              className="absolute left-3 top-1/2 -translate-y-1/2 z-10"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </IconButton>
+            <IconButton
+              label="Next photo"
+              tone="onDark"
+              onClick={(e) => { e.stopPropagation(); goNext(); }}
+              className="absolute right-3 top-1/2 -translate-y-1/2 z-10"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </IconButton>
+          </>
+        )}
+      </div>
 
       {showThumbnails && visible.length > 1 && (
         <div className="flex gap-3 mt-3 overflow-x-auto pb-1">

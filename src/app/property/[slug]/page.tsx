@@ -367,18 +367,8 @@ export default async function PropertyDetailPage({ params }: Props) {
                   </div>
                 )}
 
-                {/* Rent and interior work can't be financed — an EMI on a
-                    monthly rent or a fit-out quote doesn't mean anything. */}
-                {isFinanceable(property.property_type) &&
-                  property.price_numeric != null &&
-                  property.price_numeric > 0 && (
-                    <div className="mb-8">
-                      <EmiCalculator price={property.price_numeric} />
-                    </div>
-                  )}
-
                 {property.description && (
-                  <div id="about-property" className="scroll-mt-28">
+                  <div id="about-property" className="scroll-mt-28 mb-8">
                     <h2 className="label text-ink-soft mb-4">
                       About this property
                     </h2>
@@ -387,6 +377,14 @@ export default async function PropertyDetailPage({ params }: Props) {
                     </p>
                   </div>
                 )}
+
+                {/* Rent and interior work can't be financed — an EMI on a
+                    monthly rent or a fit-out quote doesn't mean anything. */}
+                {isFinanceable(property.property_type) &&
+                  property.price_numeric != null &&
+                  property.price_numeric > 0 && (
+                    <EmiCalculator price={property.price_numeric} />
+                  )}
               </div>
 
               <div
