@@ -32,7 +32,9 @@ export default function Contact({ headless = false }: { headless?: boolean }) {
               href={waLink(SITE.phones[0].wa)}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center gap-4 p-5 rounded-md bg-brass text-blueprint-deep font-semibold shadow-e2 transition-all duration-300 hover:bg-brass-bright hover:-translate-y-1 hover:shadow-brass"
+              // Was bg-brass on paper — the mid gold went muddy against the
+              // blush. Solid ink matches every other primary action.
+              className="group flex items-center gap-4 p-6 rounded-lg bg-ink text-paper font-bold transition-colors duration-300 hover:bg-[#1C1009]"
             >
               <IconWhatsApp className="w-6 h-6 shrink-0" />
               <span className="flex-1">Message us on WhatsApp</span>
@@ -65,33 +67,42 @@ export default function Contact({ headless = false }: { headless?: boolean }) {
               </a>
             </div>
 
-            <div className="rounded-md overflow-hidden surface">
-              <div className="flex items-start gap-4 p-5">
-                <IconPin className="w-5 h-5 text-brass shrink-0 mt-0.5" />
+            <div className="rounded-lg overflow-hidden surface">
+              <div className="flex items-start gap-4 p-6">
+                <IconPin className="w-5 h-5 text-brass shrink-0 mt-1" />
                 <div>
-                  <p className="font-semibold mb-1">{SITE.address.line}</p>
-                  <p className="text-sm text-ink-soft mb-2.5">
+                  <p className="font-bold mb-1">{SITE.address.line}</p>
+                  <p className="text-sm text-ink-soft">
                     {SITE.address.city}, {SITE.address.state}
                   </p>
-                  <a
-                    href={SITE.mapsLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-brass hover:text-brass-bright transition-colors"
-                  >
-                    Open in Google Maps →
-                  </a>
                 </div>
               </div>
-              <iframe
-                src={SITE.mapsEmbed}
-                width="100%"
-                height="230"
-                style={{ border: 0 }}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title={`Beig Estates location — ${SITE.address.line}, ${SITE.address.city}`}
-              />
+
+              {/* The bare embed shows Google's own chrome — "Open in Maps",
+                  keyboard shortcuts, "Report a map error". Muting it and
+                  putting our own link over the top keeps the panel ours,
+                  and the overlay passes clicks through to the map. */}
+              <div className="relative">
+                <iframe
+                  src={SITE.mapsEmbed}
+                  width="100%"
+                  height="240"
+                  style={{ border: 0, filter: "saturate(0.75) contrast(0.95)" }}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title={`Beig Estates location — ${SITE.address.line}, ${SITE.address.city}`}
+                  className="block"
+                />
+                <a
+                  href={SITE.mapsLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="absolute bottom-4 right-4 inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-ink text-paper text-sm font-bold shadow-e2 transition-colors duration-300 hover:bg-[#1C1009]"
+                >
+                  Get directions
+                  <span aria-hidden="true">→</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>

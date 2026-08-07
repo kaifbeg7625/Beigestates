@@ -106,33 +106,36 @@ export default function EnquiryForm() {
         />
       </div>
 
-      <Field label="Full name" htmlFor="name">
-        <input
-          required
-          id="name"
-          name="name"
-          autoComplete="name"
-          value={form.name}
-          onChange={(e) => update("name", e.target.value)}
-          className="input"
-        />
-      </Field>
+      <div className="grid sm:grid-cols-2 gap-4">
+        <Field label="Full name" htmlFor="name">
+          <input
+            required
+            id="name"
+            name="name"
+            autoComplete="name"
+            value={form.name}
+            onChange={(e) => update("name", e.target.value)}
+            className="input"
+            placeholder="Your name"
+          />
+        </Field>
 
-      <Field label="Mobile number" htmlFor="mobile">
-        <input
-          required
-          id="mobile"
-          name="mobile"
-          type="tel"
-          autoComplete="tel"
-          pattern="[0-9]{10}"
-          maxLength={10}
-          value={form.mobile}
-          onChange={(e) => update("mobile", e.target.value)}
-          className="input"
-          placeholder="10-digit number"
-        />
-      </Field>
+        <Field label="Mobile number" htmlFor="mobile">
+          <input
+            required
+            id="mobile"
+            name="mobile"
+            type="tel"
+            autoComplete="tel"
+            pattern="[0-9]{10}"
+            maxLength={10}
+            value={form.mobile}
+            onChange={(e) => update("mobile", e.target.value)}
+            className="input"
+            placeholder="10-digit number"
+          />
+        </Field>
+      </div>
 
       <Field label="What are you looking for?" htmlFor="service">
         <select
@@ -143,7 +146,7 @@ export default function EnquiryForm() {
           onChange={(e) => update("service", e.target.value)}
           className="input"
         >
-          <option value="" disabled>Select one</option>
+          <option value="" disabled>Choose an option</option>
           <option>Buy Property</option>
           <option>Sell Property</option>
           <option>Rent Property (Looking to Rent)</option>
@@ -154,7 +157,7 @@ export default function EnquiryForm() {
         </select>
       </Field>
 
-      <div className="grid sm:grid-cols-2 gap-5">
+      <div className="grid sm:grid-cols-2 gap-4">
         <Field label="City / locality" htmlFor="city">
           <input
             required
@@ -164,6 +167,7 @@ export default function EnquiryForm() {
             value={form.city}
             onChange={(e) => update("city", e.target.value)}
             className="input"
+            placeholder="Gomti Nagar, Hazratganj…"
           />
         </Field>
         <Field label="Budget range" htmlFor="budget">
@@ -175,7 +179,7 @@ export default function EnquiryForm() {
             onChange={(e) => update("budget", e.target.value)}
             className="input"
           >
-            <option value="" disabled>Select</option>
+            <option value="" disabled>Choose a range</option>
             <option>Below ₹25L</option>
             <option>₹25L – ₹75L</option>
             <option>₹75L – ₹1.5Cr</option>
@@ -197,7 +201,7 @@ export default function EnquiryForm() {
           onChange={(e) => update("timeline", e.target.value)}
           className="input"
         >
-          <option value="" disabled>Select one</option>
+          <option value="" disabled>Choose a timeline</option>
           <option>Immediately</option>
           <option>Within 30 days</option>
           <option>Within 3 months</option>
@@ -205,13 +209,15 @@ export default function EnquiryForm() {
         </select>
       </Field>
 
-      <Field label="Additional requirements (optional)" htmlFor="notes">
+      <Field label="Anything else? (optional)" htmlFor="notes">
         <textarea
           id="notes"
           name="notes"
+          rows={3}
           value={form.notes}
           onChange={(e) => update("notes", e.target.value)}
-          className="input min-h-[70px]"
+          className="input resize-none"
+          placeholder="Floor preference, parking, possession date…"
         />
       </Field>
 
@@ -232,21 +238,31 @@ export default function EnquiryForm() {
         {status === "submitting" ? "Submitting…" : "Submit requirement"}
       </Button>
 
+      {/* Bordered fields on a tinted fill, the same treatment as the hero
+          search and the listings filters. A bottom rule on its own left the
+          form looking like a different site to the one around it. */}
       <style jsx>{`
         .input {
-          /* Was a hardcoded rgba(26,39,51,…) — the old navy ink, which no
-             longer exists in the palette. Follows the token now. */
           width: 100%;
-          border: none;
-          border-bottom: 1.5px solid color-mix(in srgb, var(--ink) 25%, transparent);
-          background: transparent;
+          border: 1.5px solid color-mix(in srgb, var(--ink) 12%, transparent);
+          border-radius: 0.75rem;
+          background: color-mix(in srgb, var(--paper) 55%, transparent);
           font-size: 1.0625rem;
-          padding: 10px 2px 12px;
+          font-family: inherit;
+          color: var(--ink);
+          padding: 14px 16px;
           outline: none;
-          transition: border-color 0.2s;
+          transition: border-color 0.2s, background-color 0.2s;
+        }
+        .input::placeholder {
+          color: color-mix(in srgb, var(--ink-soft) 50%, transparent);
+        }
+        .input:hover {
+          border-color: color-mix(in srgb, var(--ink) 25%, transparent);
         }
         .input:focus {
-          border-bottom-color: var(--brass);
+          border-color: var(--brass);
+          background: #fff;
         }
       `}</style>
     </form>
@@ -264,9 +280,11 @@ function Field({
 }) {
   return (
     <div>
+      {/* Sentence case at body size. The mono uppercase micro-labels read as
+          a technical form rather than a conversation. */}
       <label
         htmlFor={htmlFor}
-        className="block label text-ink-soft mb-2"
+        className="block text-sm font-bold text-ink mb-2"
       >
         {label}
       </label>
