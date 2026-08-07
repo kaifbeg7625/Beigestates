@@ -1,7 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Listings from "@/components/Listings";
-import PageHeader from "@/components/PageHeader";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -35,10 +34,6 @@ export default async function ListingsPage({ searchParams }: Props) {
     <>
       <Navbar />
       <main id="main-content">
-        <PageHeader
-          title="Property listings in Lucknow"
-          crumbs={[{ label: "Listings" }]}
-        />
         <Listings
           filterType={type}
           initialKeyword={q}

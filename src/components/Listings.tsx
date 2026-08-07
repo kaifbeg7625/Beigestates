@@ -1,8 +1,9 @@
 import { getProperties } from "@/lib/properties";
 import ListingsGrid from "./ListingsGrid";
 
-// The heading now lives in PageHeader on the listings page, so this is just
-// the grid and its filters.
+// No page-title block above this anymore — it was breadcrumb + "Property
+// listings in Lucknow" sitting on its own before a visitor reached anything
+// useful. Navbar leads straight into the grid and its filters.
 export default async function Listings({
   filterType,
   initialKeyword,

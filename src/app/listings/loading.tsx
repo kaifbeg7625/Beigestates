@@ -1,18 +1,13 @@
 import Navbar from "@/components/Navbar";
-import PageHeader from "@/components/PageHeader";
 import { Bar, PropertyGridSkeleton } from "@/components/Skeleton";
 
-// The page header is real content that doesn't depend on the database, so it
-// renders immediately — only the grid below it is a placeholder.
+// Mirrors the real page: no header block anymore, straight into the
+// filter bar and grid.
 export default function Loading() {
   return (
     <>
       <Navbar />
       <main>
-        <PageHeader
-          title="Property listings in Lucknow"
-          crumbs={[{ label: "Listings" }]}
-        />
         <section className="py-16 sm:py-20 bg-shell">
           <div className="container-page">
             <div className="mb-12 space-y-5">
