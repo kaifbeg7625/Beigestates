@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { SITE_URL } from "@/lib/site";
 
 // Creates a real Supabase Auth account for a team member and sends them an
 // invite email to set their own password — nobody's password, including the
@@ -38,7 +39,11 @@ export async function POST(req: NextRequest) {
     }
 
     const admin = createAdminClient();
-    const redirectTo = `${req.nextUrl.origin}/admin/accept-invite`;
+    // Not req.nextUrl.origin — that's whatever machine happened to make this
+    // request. Send the invite from a local dev server and the recipient
+    // gets a link to your laptop instead of the real site, which is exactly
+    // what happened here.
+    const redirectTo = `${SITE_URL}/admin/accept-invite`;
 
     const { data: invited, error: inviteError } =
       await admin.auth.admin.inviteUserByEmail(email, {

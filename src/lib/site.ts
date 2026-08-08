@@ -1,6 +1,16 @@
 // Single source of truth for the details that show up all over the site.
 // These were copy-pasted across five components before.
 
+// Was hardcoded as `const SITE_URL = "https://beigestates.vercel.app"` in
+// four separate files (layout, sitemap, robots, the property page) — and
+// the same mistake nearly repeated itself in the team-invite email, which
+// built its redirect link from the request's own origin. Whoever happened
+// to be running that request locally got a "localhost:3000" link mailed to
+// someone else. One constant, overridable by an env var so a future custom
+// domain is a one-line change instead of a redeploy across five files.
+export const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://beigestates.vercel.app";
+
 export const SITE = {
   name: "Beig Estates",
   phones: [

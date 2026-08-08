@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
-
-// ⚠️ Update this if you connect a custom domain later
-const SITE_URL = "https://beigestates.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

@@ -23,7 +23,7 @@ import {
   IconLayers,
   IconCompass,
 } from "@/components/Icons";
-import { SITE } from "@/lib/site";
+import { SITE, SITE_URL } from "@/lib/site";
 import { idFromSlug, propertySlug } from "@/lib/slug";
 import { pricePerSqFt } from "@/lib/price";
 import { fieldsFor, hasRooms, isFinanceable, displayValue } from "@/lib/property-schema";
@@ -35,8 +35,6 @@ import type { Metadata } from "next";
 type Props = { params: Promise<{ slug: string }> };
 
 export const revalidate = 60;
-
-const SITE_URL = "https://beigestates.vercel.app";
 
 // generateMetadata and the page body both need the property. Without cache()
 // that's two identical round trips to Supabase on every single request —
