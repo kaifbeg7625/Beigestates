@@ -14,6 +14,7 @@ export default function InviteTeamMemberForm({
   const [phone, setPhone] = useState("");
   const [roleId, setRoleId] = useState(roles[0]?.id ?? "");
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
+  const [link, setLink] = useState<string | null>(null);
   const [resent, setResent] = useState(false);
   const [error, setError] = useState("");
 
@@ -21,6 +22,7 @@ export default function InviteTeamMemberForm({
     e.preventDefault();
     setStatus("sending");
     setError("");
+    setLink(null);
 
     try {
       const res = await fetch("/api/team/invite", {
@@ -29,10 +31,11 @@ export default function InviteTeamMemberForm({
         body: JSON.stringify({ name, email, phone, roleId }),
       });
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Could not send the invite.");
+      if (!res.ok) throw new Error(json.error || "Could not create the invite.");
 
       setStatus("done");
       setResent(!!json.resent);
+      setLink(json.link ?? null);
       setName("");
       setEmail("");
       setPhone("");
@@ -42,12 +45,22 @@ export default function InviteTeamMemberForm({
     }
   }
 
+  async function copyLink() {
+    if (!link) return;
+    try {
+      await navigator.clipboard.writeText(link);
+    } catch {
+      // Clipboard access can be blocked; the link is still shown to select
+      // and copy by hand.
+    }
+  }
+
   return (
     <div className="surface rounded-xl p-6">
       <p className="font-bold text-lg mb-1">Add a team member</p>
       <p className="text-sm text-ink-soft mb-5">
-        They&apos;ll get an email to set their own password — nobody types it
-        for them, including you.
+        You&apos;ll get a link to send them — WhatsApp, email, whatever&apos;s
+        easiest. Nobody types their password for them, including you.
       </p>
 
       <form onSubmit={handleSubmit} className="grid sm:grid-cols-2 gap-4">
@@ -91,12 +104,19 @@ export default function InviteTeamMemberForm({
         {status === "error" && (
           <p className="sm:col-span-2 text-sm text-danger">{error}</p>
         )}
-        {status === "done" && (
-          <p className="sm:col-span-2 text-sm text-[#3F6B4A]">
-            {resent
-              ? "That email already had an account — sent a fresh sign-in link instead."
-              : "Invite sent. They'll show up below once they accept it."}
-          </p>
+
+        {status === "done" && link && (
+          <div className="sm:col-span-2 surface-tan rounded-lg p-4 flex items-center gap-3 flex-wrap">
+            <p className="text-sm text-ink-soft shrink-0">
+              {resent ? "Existing account — new link:" : "Send them this link:"}
+            </p>
+            <code className="text-xs bg-shell rounded px-3 py-2 flex-1 min-w-0 truncate">
+              {link}
+            </code>
+            <Button type="button" size="md" className="!px-4 !py-2" onClick={copyLink}>
+              Copy
+            </Button>
+          </div>
         )}
 
         <Button
@@ -105,7 +125,7 @@ export default function InviteTeamMemberForm({
           disabled={status === "sending" || !roleId}
           className="sm:col-span-2 w-full sm:w-auto"
         >
-          {status === "sending" ? "Sending…" : "Send invite"}
+          {status === "sending" ? "Creating…" : "Create invite"}
         </Button>
       </form>
     </div>

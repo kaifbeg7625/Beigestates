@@ -138,15 +138,22 @@ export default function TeamRoster({
         </div>
       )}
 
+      {/* overflow-x-auto on this inner wrapper, not the rounded-corner card
+          itself — a table wider than the card scrolls inside its own box
+          instead of visually breaking out past the edge, which is what the
+          Actions column was doing with three stacked buttons at full width. */}
       <div className="surface rounded-xl overflow-hidden">
+        <div className="overflow-x-auto">
         <table className="w-full text-left">
           <thead>
             <tr className="border-b border-ink/10 text-sm text-ink-soft">
-              <th className="p-4 font-bold">Name</th>
-              <th className="p-4 font-bold">Department</th>
-              <th className="p-4 font-bold">Email</th>
-              <th className="p-4 font-bold">Phone</th>
-              {isOwner && <th className="p-4 font-bold">Actions</th>}
+              <th className="p-4 font-bold whitespace-nowrap">Name</th>
+              <th className="p-4 font-bold whitespace-nowrap">Department</th>
+              <th className="p-4 font-bold whitespace-nowrap">Email</th>
+              <th className="p-4 font-bold whitespace-nowrap">Phone</th>
+              {isOwner && (
+                <th className="p-4 font-bold whitespace-nowrap">Actions</th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -201,7 +208,12 @@ export default function TeamRoster({
                   </td>
                   {isOwner && (
                   <td className="p-4">
-                    <div className="flex items-center gap-3 flex-wrap">
+                    {/* whitespace-nowrap on the group, not flex-wrap — three
+                        buttons wrapping into a tall stack (each on its own
+                        line, with the row's other cells' line-height adding
+                        gaps between them) is what made this column spill
+                        out of the card before. */}
+                    <div className="flex items-center gap-4 whitespace-nowrap">
                       {isEditing ? (
                         <>
                           <Button
@@ -235,7 +247,7 @@ export default function TeamRoster({
                             disabled={isBusy}
                             className="text-sm font-bold text-ink hover:underline disabled:opacity-50"
                           >
-                            {isBusy ? "Sending…" : "Resend / Get link"}
+                            {isBusy ? "Working…" : "Get link"}
                           </button>
                           {!isSelf && (
                             <button
@@ -256,6 +268,7 @@ export default function TeamRoster({
             })}
           </tbody>
         </table>
+        </div>
 
         {members.length === 0 && (
           <p className="p-6 text-sm text-ink-soft">No team members yet.</p>
