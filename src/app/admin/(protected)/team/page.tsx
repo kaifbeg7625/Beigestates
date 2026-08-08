@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import InviteTeamMemberForm from "@/components/InviteTeamMemberForm";
 import TeamRoster from "@/components/TeamRoster";
+import { redirect } from "next/navigation";
 
 type Member = {
   id: string;
@@ -10,6 +11,10 @@ type Member = {
   role_id: string;
 };
 
+// Owner-only page. The RLS policy would let a manager or a Sales person
+// through to a partial view (their own row, or their reports') — this page
+// specifically is the full roster + invite/edit/remove controls, which
+// stays owner-only regardless.
 export default async function TeamPage() {
   const supabase = await createClient();
 
@@ -31,17 +36,19 @@ export default async function TeamPage() {
     supabase.from("roles").select("id, name").order("name"),
   ]);
 
+  if (!isOwner) redirect("/admin/leads");
+
   return (
     <div className="space-y-8">
       <h1 className="font-extrabold text-2xl">Team</h1>
 
-      {isOwner && roles && <InviteTeamMemberForm roles={roles} />}
+      {roles && <InviteTeamMemberForm roles={roles} />}
 
       <TeamRoster
         members={members ?? []}
         roles={roles ?? []}
         currentUserId={user?.id ?? ""}
-        isOwner={!!isOwner}
+        isOwner
       />
     </div>
   );

@@ -1,8 +1,23 @@
 import { createClient } from "@/lib/supabase/server";
 import { ButtonLink } from "@/components/Button";
+import { redirect } from "next/navigation";
 
 export default async function AdminDashboard() {
   const supabase = await createClient();
+
+  const { data: isOwner } = await supabase.rpc("is_owner");
+
+  // This page shows counts across properties AND leads — cross-cutting
+  // owner-level information. A Sales person landing here (an old bookmark,
+  // a direct URL) gets sent to the one section they actually have, instead
+  // of a dashboard built for a role they don't have.
+  if (!isOwner) {
+    const { data: canLeads } = await supabase.rpc("has_permission", {
+      p_module: "leads",
+      p_action: "view",
+    });
+    redirect(canLeads ? "/admin/leads" : "/admin/properties");
+  }
 
   const { count: propertyCount } = await supabase
     .from("properties")
