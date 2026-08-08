@@ -3,9 +3,10 @@ import { createClient as createServerClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { SITE_URL } from "@/lib/site";
 
-// Creates a real Supabase Auth account for a team member and sends them an
-// invite email to set their own password — nobody's password, including the
-// owner's, ever passes through this code or gets typed by anyone but them.
+// Creates a real Supabase Auth account for a team member (or, for an
+// existing one, refreshes their access) and returns a link the owner can
+// share however they want — copy it into WhatsApp, resend the email, both.
+// Nobody's password, including the owner's, ever passes through this code.
 export async function POST(req: NextRequest) {
   try {
     // Verify against the CALLER'S OWN session, never anything the request
@@ -41,8 +42,7 @@ export async function POST(req: NextRequest) {
     const admin = createAdminClient();
     // Not req.nextUrl.origin — that's whatever machine happened to make this
     // request. Send the invite from a local dev server and the recipient
-    // gets a link to your laptop instead of the real site, which is exactly
-    // what happened here.
+    // gets a link to your laptop instead of the real site.
     const redirectTo = `${SITE_URL}/admin/accept-invite`;
 
     const { data: invited, error: inviteError } =
@@ -51,12 +51,17 @@ export async function POST(req: NextRequest) {
         redirectTo,
       });
 
+    let userId: string | null = null;
+    let resent = false;
+
     if (invited?.user) {
+      userId = invited.user.id;
+
       // team_members.id references auth.users.id directly, so this row can
       // exist immediately — the person shows up on the roster right away,
       // before they've clicked the invite or set a password.
       const { error: rowError } = await supabase.from("team_members").insert({
-        id: invited.user.id,
+        id: userId,
         role_id: roleId,
         name,
         phone: phone || null,
@@ -66,22 +71,15 @@ export async function POST(req: NextRequest) {
       if (rowError) {
         // The auth account now exists but isn't a team member — clean it up
         // rather than leaving an orphaned login nobody can see or manage.
-        await admin.auth.admin.deleteUser(invited.user.id);
+        await admin.auth.admin.deleteUser(userId);
         return NextResponse.json({ error: rowError.message }, { status: 500 });
       }
-
-      return NextResponse.json({ success: true });
-    }
-
-    // The common retry case: this email already has an auth account, most
-    // often because a previous invite to it was sent but never completed
-    // (e.g. the very bug that made the first version of this route mail out
-    // a localhost link). inviteUserByEmail refuses a second time for an
-    // existing account — a password-reset link is the right tool instead:
-    // it works regardless of confirmation state, and lands on the same
-    // /admin/accept-invite page either way, since that page just calls
-    // updateUser({ password }).
-    if (inviteError?.message.includes("already been registered")) {
+    } else if (inviteError?.message.includes("already been registered")) {
+      // The common retry/resend case: this email already has an auth
+      // account — from a previous invite, or from clicking "Resend" on the
+      // roster. inviteUserByEmail refuses a second time for an existing
+      // account, so find it and update its team_members row directly
+      // instead of erroring out.
       const { data: existing } = await admin.auth.admin.listUsers();
       const existingUser = existing?.users.find((u) => u.email === email);
 
@@ -91,30 +89,43 @@ export async function POST(req: NextRequest) {
           { status: 500 }
         );
       }
+      userId = existingUser.id;
+      resent = true;
 
       const { error: upsertError } = await supabase
         .from("team_members")
-        .upsert({ id: existingUser.id, role_id: roleId, name, phone: phone || null, email });
+        .upsert({ id: userId, role_id: roleId, name, phone: phone || null, email });
 
       if (upsertError) {
         return NextResponse.json({ error: upsertError.message }, { status: 500 });
       }
-
-      const { error: resetError } = await admin.auth.resetPasswordForEmail(email, {
-        redirectTo,
-      });
-
-      if (resetError) {
-        return NextResponse.json({ error: resetError.message }, { status: 500 });
-      }
-
-      return NextResponse.json({ success: true, resent: true });
+    } else {
+      return NextResponse.json(
+        { error: inviteError?.message || "Could not send the invite." },
+        { status: 400 }
+      );
     }
 
-    return NextResponse.json(
-      { error: inviteError?.message || "Could not send the invite." },
-      { status: 400 }
-    );
+    // A copyable link as well as the email — Supabase's own delivery has
+    // been the unreliable part all along today (rate limits, spam
+    // filtering, the wrong redirect URL until a few minutes ago). Covers
+    // both branches: a brand-new account uses type "invite", one that
+    // already existed (the resend/retry path) uses "recovery" — the same
+    // type that already worked for the earlier manual fix.
+    const { data: linkData, error: linkError } = await admin.auth.admin.generateLink({
+      type: resent ? "recovery" : "invite",
+      email,
+      options: { redirectTo },
+    });
+    const link = linkError ? null : linkData.properties.action_link;
+
+    if (resent) {
+      // Belt and suspenders — still trigger Supabase's own email too, in
+      // case the owner doesn't want to relay the link manually.
+      await admin.auth.resetPasswordForEmail(email, { redirectTo });
+    }
+
+    return NextResponse.json({ success: true, resent, link });
   } catch (err) {
     console.error("Team invite error:", err);
     return NextResponse.json({ error: "Something went wrong." }, { status: 500 });
