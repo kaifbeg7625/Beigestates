@@ -14,6 +14,7 @@ export default function InviteTeamMemberForm({
   const [phone, setPhone] = useState("");
   const [roleId, setRoleId] = useState(roles[0]?.id ?? "");
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
+  const [resent, setResent] = useState(false);
   const [error, setError] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
@@ -31,6 +32,7 @@ export default function InviteTeamMemberForm({
       if (!res.ok) throw new Error(json.error || "Could not send the invite.");
 
       setStatus("done");
+      setResent(!!json.resent);
       setName("");
       setEmail("");
       setPhone("");
@@ -91,7 +93,9 @@ export default function InviteTeamMemberForm({
         )}
         {status === "done" && (
           <p className="sm:col-span-2 text-sm text-[#3F6B4A]">
-            Invite sent. They&apos;ll show up below once they accept it.
+            {resent
+              ? "That email already had an account — sent a fresh sign-in link instead."
+              : "Invite sent. They'll show up below once they accept it."}
           </p>
         )}
 

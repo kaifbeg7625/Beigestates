@@ -51,34 +51,70 @@ export async function POST(req: NextRequest) {
         redirectTo,
       });
 
-    if (inviteError || !invited.user) {
-      // "already been registered" is the common case — someone re-inviting
-      // an email that's already a team member.
-      return NextResponse.json(
-        { error: inviteError?.message || "Could not send the invite." },
-        { status: 400 }
-      );
+    if (invited?.user) {
+      // team_members.id references auth.users.id directly, so this row can
+      // exist immediately — the person shows up on the roster right away,
+      // before they've clicked the invite or set a password.
+      const { error: rowError } = await supabase.from("team_members").insert({
+        id: invited.user.id,
+        role_id: roleId,
+        name,
+        phone: phone || null,
+        email,
+      });
+
+      if (rowError) {
+        // The auth account now exists but isn't a team member — clean it up
+        // rather than leaving an orphaned login nobody can see or manage.
+        await admin.auth.admin.deleteUser(invited.user.id);
+        return NextResponse.json({ error: rowError.message }, { status: 500 });
+      }
+
+      return NextResponse.json({ success: true });
     }
 
-    // team_members.id references auth.users.id directly, so this row can
-    // exist immediately — the person shows up on the roster right away,
-    // before they've clicked the invite or set a password.
-    const { error: rowError } = await supabase.from("team_members").insert({
-      id: invited.user.id,
-      role_id: roleId,
-      name,
-      phone: phone || null,
-      email,
-    });
+    // The common retry case: this email already has an auth account, most
+    // often because a previous invite to it was sent but never completed
+    // (e.g. the very bug that made the first version of this route mail out
+    // a localhost link). inviteUserByEmail refuses a second time for an
+    // existing account — a password-reset link is the right tool instead:
+    // it works regardless of confirmation state, and lands on the same
+    // /admin/accept-invite page either way, since that page just calls
+    // updateUser({ password }).
+    if (inviteError?.message.includes("already been registered")) {
+      const { data: existing } = await admin.auth.admin.listUsers();
+      const existingUser = existing?.users.find((u) => u.email === email);
 
-    if (rowError) {
-      // The auth account now exists but isn't a team member — clean it up
-      // rather than leaving an orphaned login nobody can see or manage.
-      await admin.auth.admin.deleteUser(invited.user.id);
-      return NextResponse.json({ error: rowError.message }, { status: 500 });
+      if (!existingUser) {
+        return NextResponse.json(
+          { error: "Could not find that existing account." },
+          { status: 500 }
+        );
+      }
+
+      const { error: upsertError } = await supabase
+        .from("team_members")
+        .upsert({ id: existingUser.id, role_id: roleId, name, phone: phone || null, email });
+
+      if (upsertError) {
+        return NextResponse.json({ error: upsertError.message }, { status: 500 });
+      }
+
+      const { error: resetError } = await admin.auth.resetPasswordForEmail(email, {
+        redirectTo,
+      });
+
+      if (resetError) {
+        return NextResponse.json({ error: resetError.message }, { status: 500 });
+      }
+
+      return NextResponse.json({ success: true, resent: true });
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json(
+      { error: inviteError?.message || "Could not send the invite." },
+      { status: 400 }
+    );
   } catch (err) {
     console.error("Team invite error:", err);
     return NextResponse.json({ error: "Something went wrong." }, { status: 500 });
