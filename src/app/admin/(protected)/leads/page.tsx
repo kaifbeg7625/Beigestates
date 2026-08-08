@@ -2,7 +2,12 @@ import { createClient } from "@/lib/supabase/server";
 import LeadsManager from "@/components/LeadsManager";
 import type { Lead } from "@/lib/types";
 
-export default async function LeadsPage() {
+type Props = {
+  searchParams: Promise<{ stage?: string; assigned_to?: string }>;
+};
+
+export default async function LeadsPage({ searchParams }: Props) {
+  const { stage, assigned_to } = await searchParams;
   const supabase = await createClient();
 
   const [{ data: leads }, { data: teamMembers }] = await Promise.all([
@@ -20,7 +25,12 @@ export default async function LeadsPage() {
   return (
     <div>
       <h1 className="font-extrabold text-2xl mb-8">Leads</h1>
-      <LeadsManager initialLeads={leads ?? []} teamMembers={teamMembers ?? []} />
+      <LeadsManager
+        initialLeads={leads ?? []}
+        teamMembers={teamMembers ?? []}
+        initialStage={stage}
+        initialAssignedTo={assigned_to}
+      />
     </div>
   );
 }
