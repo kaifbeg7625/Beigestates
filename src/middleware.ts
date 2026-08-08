@@ -39,8 +39,13 @@ export async function middleware(request: NextRequest) {
   }
 
   const isLoginRoute = request.nextUrl.pathname === "/admin/login";
+  // The invited person already has a team_members row by the time this link
+  // is clickable (the invite API creates it in the same request that sends
+  // the email), so is_admin() should already be true here — but exempting
+  // the route too means a timing edge case can't turn into a lockout loop.
+  const isAcceptInviteRoute = request.nextUrl.pathname === "/admin/accept-invite";
 
-  if (!isLoginRoute && !isAdmin) {
+  if (!isLoginRoute && !isAcceptInviteRoute && !isAdmin) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin/login";
     // Logged in but not on the list — say so instead of silently
