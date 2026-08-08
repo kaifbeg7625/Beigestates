@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
       budget,
       timeline,
       notes: notes || null,
+      source: "Website",
     });
 
     if (insertError) {

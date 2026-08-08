@@ -35,16 +35,49 @@ export type PropertyImage = {
   sort_order: number;
 };
 
+export const LEAD_STAGES = [
+  "New",
+  "Contacted",
+  "Ready to Visit",
+  "Visited",
+  "Negotiating",
+  "Won",
+  "Lost",
+] as const;
+export type LeadStage = (typeof LEAD_STAGES)[number];
+
+export const LEAD_TAGS = [
+  "Interested",
+  "Not Interested",
+  "May Buy Later",
+  "Needs EMI",
+] as const;
+export type LeadTag = (typeof LEAD_TAGS)[number];
+
 export type Lead = {
   id: string;
   name: string;
   mobile: string;
-  service: string;
-  city: string;
-  budget: string;
-  timeline: string;
+  email: string | null;
+  service: string | null;
+  city: string | null;
+  budget: string | null;
+  timeline: string | null;
   notes: string | null;
-  status: string;
+  stage: LeadStage;
+  tags: LeadTag[];
+  source: string;
+  assigned_to: string | null;
+  created_at: string;
+};
+
+/** One entry in a lead's call/remark/conversation timeline. */
+export type LeadActivity = {
+  id: string;
+  lead_id: string;
+  actor_id: string | null;
+  kind: "call" | "note" | "whatsapp" | "email" | "stage_change";
+  content: string;
   created_at: string;
 };
 

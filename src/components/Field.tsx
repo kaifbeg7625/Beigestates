@@ -66,7 +66,9 @@ export function Select({
   className = "",
   ...rest
 }: {
-  options: (Option | string)[];
+  // readonly so an `as const` tuple (LEAD_STAGES, LEAD_TAGS) can be passed
+  // directly instead of needing a spread at every call site.
+  options: readonly (Option | string)[];
   placeholder?: string;
 } & React.SelectHTMLAttributes<HTMLSelectElement>) {
   const items: Option[] = options.map((o) =>

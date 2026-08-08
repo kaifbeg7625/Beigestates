@@ -1,121 +1,118 @@
 "use client";
 
-import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useMemo, useState } from "react";
+import Link from "next/link";
 import type { Lead } from "@/lib/types";
-import { Pill, Select, Detail } from "./Field";
+import { LEAD_STAGES } from "@/lib/types";
+import { Pill } from "./Field";
 import { Button } from "./Button";
+import AddLeadForm from "./AddLeadForm";
 
-const STATUS_OPTIONS = ["New", "Contacted", "Closed", "Rejected"];
-
-// Palette-native status colours rather than raw bg-blue-100/bg-green-100,
-// which were the one place in the admin still using stock Tailwind colours
-// instead of the site's own tokens.
-const STATUS_COLORS: Record<string, string> = {
+// Palette-native stage colours rather than raw bg-blue-100/bg-green-100.
+const STAGE_COLORS: Record<string, string> = {
   New: "bg-brass/15 text-brass",
   Contacted: "bg-ink/10 text-ink",
-  Closed: "bg-[#3F6B4A]/12 text-[#3F6B4A]",
-  Rejected: "bg-danger/12 text-danger",
+  "Ready to Visit": "bg-[#6B5E3F]/12 text-[#6B5E3F]",
+  Visited: "bg-[#3F5E6B]/12 text-[#3F5E6B]",
+  Negotiating: "bg-[#8A5A2E]/15 text-[#8A5A2E]",
+  Won: "bg-[#3F6B4A]/12 text-[#3F6B4A]",
+  Lost: "bg-danger/12 text-danger",
 };
 
-export default function LeadsManager({ initialLeads }: { initialLeads: Lead[] }) {
+type TeamMember = { id: string; name: string; manager_id: string | null };
+
+export default function LeadsManager({
+  initialLeads,
+  teamMembers,
+}: {
+  initialLeads: Lead[];
+  teamMembers: TeamMember[];
+}) {
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
   const [filter, setFilter] = useState<string>("All");
-  const supabase = createClient();
+  const [showAdd, setShowAdd] = useState(false);
 
-  async function updateStatus(id: string, status: string) {
-    const { error } = await supabase.from("leads").update({ status }).eq("id", id);
-    if (!error) {
-      setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, status } : l)));
-    }
+  const nameOf = useMemo(() => {
+    const map = new Map(teamMembers.map((m) => [m.id, m.name]));
+    return (id: string | null) => (id ? map.get(id) ?? "Unassigned" : "Unassigned");
+  }, [teamMembers]);
+
+  const filtered = filter === "All" ? leads : leads.filter((l) => l.stage === filter);
+
+  function addLeads(newLeads: Lead[]) {
+    setLeads((prev) => [...newLeads, ...prev]);
+    setShowAdd(false);
   }
-
-  async function handleDelete(id: string) {
-    if (!confirm("Delete this lead permanently?")) return;
-    const { error } = await supabase.from("leads").delete().eq("id", id);
-    if (!error) {
-      setLeads((prev) => prev.filter((l) => l.id !== id));
-    }
-  }
-
-  const filtered = filter === "All" ? leads : leads.filter((l) => l.status === filter);
 
   return (
     <div>
-      <div className="flex gap-2 mb-6 flex-wrap">
-        {["All", ...STATUS_OPTIONS].map((s) => (
-          <Pill key={s} active={filter === s} onClick={() => setFilter(s)}>
-            {s}
-          </Pill>
-        ))}
+      <div className="flex items-center justify-between gap-4 flex-wrap mb-6">
+        <div className="flex gap-2 flex-wrap">
+          {["All", ...LEAD_STAGES].map((s) => (
+            <Pill key={s} active={filter === s} onClick={() => setFilter(s)}>
+              {s}
+            </Pill>
+          ))}
+        </div>
+        <Button size="md" className="!px-4 !py-2" onClick={() => setShowAdd((v) => !v)}>
+          {showAdd ? "Close" : "Add lead"}
+        </Button>
       </div>
 
-      <div className="space-y-3">
-        {filtered.map((lead) => (
-          <div key={lead.id} className="surface rounded-xl p-6">
-            <div className="flex items-start justify-between gap-4 mb-4">
-              <div>
-                <p className="font-bold text-lg">{lead.name}</p>
-                <a href={`tel:${lead.mobile}`} className="text-sm text-brass">
-                  {lead.mobile}
-                </a>
-              </div>
-              <span
-                className={`px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide shrink-0 ${
-                  STATUS_COLORS[lead.status] ?? "bg-ink/10 text-ink-soft"
-                }`}
-              >
-                {lead.status}
-              </span>
-            </div>
+      {showAdd && (
+        <div className="mb-6">
+          <AddLeadForm onAdded={addLeads} />
+        </div>
+      )}
 
-            <div className="grid sm:grid-cols-4 gap-4 mb-4">
-              <Detail label="Service" value={lead.service} />
-              <Detail label="City" value={lead.city} />
-              <Detail label="Budget" value={lead.budget} />
-              <Detail label="Timeline" value={lead.timeline} />
-            </div>
-
-            {lead.notes && (
-              <p className="text-sm text-ink-soft mb-4 surface-tan rounded-lg p-4">
-                {lead.notes}
-              </p>
-            )}
-
-            <div className="flex items-center gap-3 flex-wrap">
-              <Select
-                value={lead.status}
-                onChange={(e) => updateStatus(lead.id, e.target.value)}
-                options={STATUS_OPTIONS}
-                aria-label="Lead status"
-                className="w-auto"
-              />
-              <Button
-                variant="ghost"
-                size="md"
-                className="!px-4 !py-2"
-                onClick={() =>
-                  window.open(`https://wa.me/91${lead.mobile}`, "_blank")
-                }
-              >
-                WhatsApp
-              </Button>
-              <button
-                onClick={() => handleDelete(lead.id)}
-                className="text-sm font-bold text-danger ml-auto hover:underline"
-              >
-                Delete
-              </button>
-            </div>
-
-            <p className="text-xs text-ink-soft/60 mt-4">
-              {new Date(lead.created_at).toLocaleString("en-IN")}
-            </p>
-          </div>
-        ))}
+      <div className="surface rounded-xl overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="border-b border-ink/10 text-sm text-ink-soft">
+                <th className="p-4 font-bold whitespace-nowrap">Name</th>
+                <th className="p-4 font-bold whitespace-nowrap">Stage</th>
+                <th className="p-4 font-bold whitespace-nowrap">Source</th>
+                <th className="p-4 font-bold whitespace-nowrap">Assigned to</th>
+                <th className="p-4 font-bold whitespace-nowrap">Received</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((lead) => (
+                <tr key={lead.id} className="border-b border-ink/6 last:border-0 hover:bg-paper/60">
+                  <td className="p-4">
+                    <Link
+                      href={`/admin/leads/${lead.id}`}
+                      className="font-bold hover:text-brass hover:underline"
+                    >
+                      {lead.name}
+                    </Link>
+                    <p className="text-sm text-ink-soft">{lead.mobile}</p>
+                  </td>
+                  <td className="p-4">
+                    <span
+                      className={`px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide whitespace-nowrap ${
+                        STAGE_COLORS[lead.stage] ?? "bg-ink/10 text-ink-soft"
+                      }`}
+                    >
+                      {lead.stage}
+                    </span>
+                  </td>
+                  <td className="p-4 text-sm text-ink-soft whitespace-nowrap">{lead.source}</td>
+                  <td className="p-4 text-sm text-ink-soft whitespace-nowrap">
+                    {nameOf(lead.assigned_to)}
+                  </td>
+                  <td className="p-4 text-sm text-ink-soft whitespace-nowrap">
+                    {new Date(lead.created_at).toLocaleDateString("en-IN")}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         {filtered.length === 0 && (
-          <p className="text-sm text-ink-soft">No leads in this category yet.</p>
+          <p className="p-6 text-sm text-ink-soft">No leads in this category yet.</p>
         )}
       </div>
     </div>
